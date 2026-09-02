@@ -44,13 +44,22 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
       <div className="stitch-card rounded-3xl p-6 sm:p-8 relative overflow-hidden border-white/10 bg-gradient-to-r from-violet-950/30 via-[#191a1f] to-cyan-950/20">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">
                 {user?.institution || 'Stanford University'}
               </span>
               <span className="text-xs text-neutral-400 font-mono">
                 {circadianStatus.windowLabel}
               </span>
+              <a
+                href="https://stitch.withgoogle.com/projects/1507620726274103179"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 flex items-center gap-1 hover:bg-cyan-500/20 transition-colors"
+                title="Google Stitch Reference Project 1507620726274103179"
+              >
+                <span>Stitch #1507620726274103179</span>
+              </a>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Welcome back, {user?.name || 'Scholar'}

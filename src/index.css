@@ -8,16 +8,24 @@
     --bg-card-hover: #262930;
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-strong: rgba(255, 255, 255, 0.16);
+    --stitch-violet: #8b5cf6;
+    --stitch-cyan: #06b6d4;
   }
 
   body {
     background-color: #121316;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.07) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.04) 0px, transparent 50%);
+    background-attachment: fixed;
     color: #e3e3e3;
     font-family: 'Google Sans Text', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.015em;
   }
 
   code, pre, .font-mono {
@@ -41,25 +49,36 @@
   background: #3f434e;
 }
 
-/* Glassmorphism & stitch surface cards */
+/* Google Stitch signature cards & surfaces */
 .stitch-card {
   background-color: #191a1f;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
 .stitch-card-hover:hover {
   border-color: rgba(255, 255, 255, 0.16);
   background-color: #1e2025;
-  transform: translateY(-1px);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.45);
 }
 
 .stitch-glass {
-  background: rgba(25, 26, 31, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(25, 26, 31, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Google Stitch glowing accents */
+.stitch-glow-violet {
+  box-shadow: 0 0 25px -4px rgba(139, 92, 246, 0.35);
+}
+
+.stitch-glow-cyan {
+  box-shadow: 0 0 25px -4px rgba(6, 182, 212, 0.35);
 }
 
 /* Pulse breathing glow animation for focus and friction modal */

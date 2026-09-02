@@ -69,6 +69,19 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAuth, onN
             <span>({timerStr}) {mode.toUpperCase()}</span>
           </button>
         )}
+
+        {/* Google Stitch Reference Badge */}
+        <a
+          href="https://stitch.withgoogle.com/projects/1507620726274103179"
+          target="_blank"
+          rel="noreferrer"
+          className="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-violet-600/15 via-cyan-500/15 to-violet-600/15 border border-violet-500/30 text-[11px] font-mono font-medium text-violet-300 hover:text-white hover:border-violet-500/60 transition-all cursor-pointer shadow-sm ml-2"
+          title="Google Stitch UI Reference Project: 1507620726274103179"
+        >
+          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-violet-400 to-cyan-400 animate-pulse" />
+          <span>Stitch Project #1507620726274103179</span>
+          <ExternalLink className="w-3 h-3 text-neutral-400" />
+        </a>
       </div>
 
       {/* Right: Badges, Notifications, Avatar */}
