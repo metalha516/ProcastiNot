@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Topbar } from './Topbar';
 import { Sidebar } from './Sidebar';
 import { OverviewDashboard } from '../dashboard/OverviewDashboard';
@@ -6,8 +6,6 @@ import { PomodoroTimer } from '../timer/PomodoroTimer';
 import { DistractionBlocker } from '../distraction/DistractionBlocker';
 import { SecondThoughtModal } from '../distraction/SecondThoughtModal';
 import { CircadianOrganizer } from '../planner/CircadianOrganizer';
-import { AIStudyPlanner } from '../planner/AIStudyPlanner';
-import { ExamCountdown } from '../planner/ExamCountdown';
 import { VirtualFocusRooms } from '../rooms/VirtualFocusRooms';
 import { StreakHeatmap } from '../gamification/StreakHeatmap';
 import { PerformanceDeltaCurve } from '../gamification/PerformanceDeltaCurve';
@@ -20,25 +18,43 @@ export const Shell: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    return document.documentElement.classList.contains('dark');
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
+  const toggleTheme = () => {
+    setIsDark(prev => !prev);
+  };
 
   const renderActiveView = () => {
     switch (activeTab) {
       case 'dashboard':
         return <OverviewDashboard onNavigate={setActiveTab} />;
       case 'timer':
+      case 'focus-timer':
         return <PomodoroTimer />;
       case 'blocker':
         return <DistractionBlocker />;
+      case 'planner-tasks':
       case 'circadian':
-        return <CircadianOrganizer />;
       case 'ai-planner':
-        return <AIStudyPlanner />;
       case 'countdown':
-        return <ExamCountdown />;
+        return <CircadianOrganizer />;
+      case 'study-rooms':
       case 'rooms':
         return <VirtualFocusRooms />;
+      case 'habits-matrix':
       case 'habits':
         return <StreakHeatmap />;
+      case 'analytics':
       case 'delta':
         return <PerformanceDeltaCurve />;
       case 'arena':
@@ -51,16 +67,9 @@ export const Shell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#121316] text-[#e3e3e3] flex flex-col">
-      {/* Top Application Bar */}
-      <Topbar
-        onToggleSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        onNavigate={setActiveTab}
-      />
-
-      {/* Main Body with Sidebar + Content */}
-      <div className="flex flex-1 relative">
+    <div className="min-h-screen bg-[#eef2f9] dark:bg-[#0c1017] text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300">
+      <div className="flex flex-1 relative max-w-[1920px] mx-auto w-full">
+        {/* Claymorphic Tactile Sidebar */}
         <Sidebar
           activeTab={activeTab}
           onSelectTab={setActiveTab}
@@ -68,11 +77,23 @@ export const Shell: React.FC = () => {
           onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)}
           isMobileOpen={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          isDark={isDark}
+          onToggleTheme={toggleTheme}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
-          {renderActiveView()}
-        </main>
+        {/* Main Content View Container */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+          {/* Topbar Header */}
+          <Topbar
+            onToggleSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onNavigate={setActiveTab}
+          />
+
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full overflow-y-auto">
+            {renderActiveView()}
+          </main>
+        </div>
       </div>
 
       {/* Global Modals */}
@@ -81,3 +102,4 @@ export const Shell: React.FC = () => {
     </div>
   );
 };
+

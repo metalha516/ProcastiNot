@@ -2,111 +2,223 @@
 
 @layer base {
   :root {
-    --bg-base: #121316;
-    --bg-surface: #191a1f;
-    --bg-card: #1e2025;
-    --bg-card-hover: #262930;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-strong: rgba(255, 255, 255, 0.16);
-    --stitch-violet: #8b5cf6;
-    --stitch-cyan: #06b6d4;
+    --bg-base: #eef2f9;
+    --bg-surface: #f4f7fc;
+    --bg-card: #f4f7fc;
+    --bg-card-hover: #ffffff;
+    --border-subtle: rgba(255, 255, 255, 0.6);
+    --border-strong: rgba(166, 178, 202, 0.3);
+    --primary: #ea580c;
+  }
+
+  .dark {
+    --bg-base: #0c1017;
+    --bg-surface: #181d2a;
+    --bg-card: #181d2a;
+    --bg-card-hover: #1f2537;
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --border-strong: rgba(255, 255, 255, 0.1);
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
   body {
-    background-color: #121316;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.07) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.06) 0px, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.04) 0px, transparent 50%);
-    background-attachment: fixed;
-    color: #e3e3e3;
-    font-family: 'Google Sans Text', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    letter-spacing: -0.015em;
-  }
-
-  code, pre, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+    overscroll-behavior: none;
+    background-color: var(--bg-base);
   }
 }
 
-/* Custom modern scrollbars */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #121316;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2d35;
+  background: rgba(148, 163, 184, 0.4);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f434e;
+  background: rgba(148, 163, 184, 0.7);
 }
 
-/* Google Stitch signature cards & surfaces */
-.stitch-card {
-  background-color: #191a1f;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
+/* ---------------------------------------------------- */
+/* STITCH CLAYMORPHIC & TACTILE CONSOLE COMPONENT CLASSES */
+/* ---------------------------------------------------- */
+
+/* 1. Clay Cards */
+.clay-card {
+  background: #f4f7fc;
+  box-shadow: 10px 14px 28px rgba(166, 178, 202, 0.4), -8px -8px 20px rgba(255, 255, 255, 0.95), inset 3px 3px 6px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(166, 178, 202, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.stitch-card-hover:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  background-color: #1e2025;
-  transform: translateY(-1.5px);
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.45);
+.dark .clay-card {
+  background: #181d2a;
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.75), 0 4px 12px rgba(0, 0, 0, 0.5), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.08), inset -2px -2px 5px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.stitch-glass {
-  background: rgba(25, 26, 31, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.clay-card-subtle {
+  background: #ebf0f8;
+  box-shadow: 6px 8px 18px rgba(166, 178, 202, 0.35), -5px -5px 14px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(166, 178, 202, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-/* Google Stitch glowing accents */
-.stitch-glow-violet {
-  box-shadow: 0 0 25px -4px rgba(139, 92, 246, 0.35);
+.dark .clay-card-subtle {
+  background: #1f2537;
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.6), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.07), inset -2px -2px 4px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.stitch-glow-cyan {
-  box-shadow: 0 0 25px -4px rgba(6, 182, 212, 0.35);
+/* 2. Clay Insets (Well/Recessed fields) */
+.clay-inset {
+  background: #e8eef8;
+  box-shadow: inset 4px 4px 8px rgba(166, 178, 202, 0.45), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* Pulse breathing glow animation for focus and friction modal */
+.dark .clay-inset {
+  background: #111520;
+  box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.7), inset -2px -2px 5px rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* 3. Clay Pills & Badges */
+.clay-pill {
+  background: #f0f4fb;
+  box-shadow: 4px 6px 12px rgba(166, 178, 202, 0.35), -3px -3px 8px rgba(255, 255, 255, 0.9), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.9), inset -1.5px -1.5px 3px rgba(166, 178, 202, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.dark .clay-pill {
+  background: #202738;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 1px 1px 2px rgba(255, 255, 255, 0.1), inset -1.5px -1.5px 3px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 4. Clay Buttons */
+.clay-btn-primary {
+  background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+  box-shadow: 0 10px 20px rgba(234, 88, 12, 0.32), inset 2px 2px 5px rgba(255, 255, 255, 0.6), inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.clay-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(234, 88, 12, 0.4), inset 2px 2px 5px rgba(255, 255, 255, 0.7), inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.clay-btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.3), inset 3px 3px 6px rgba(0, 0, 0, 0.25), inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.clay-btn-light {
+  background: #f0f4fb;
+  box-shadow: 5px 6px 14px rgba(166, 178, 202, 0.4), -4px -4px 10px rgba(255, 255, 255, 0.95), inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(166, 178, 202, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.clay-btn-light:hover {
+  background: #f8fafc;
+}
+
+.clay-btn-light:active {
+  transform: scale(0.98);
+  box-shadow: inset 3px 3px 6px rgba(166, 178, 202, 0.4), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+}
+
+.dark .clay-btn-light {
+  background: #232a3d;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.08), inset -2px -2px 4px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .clay-btn-light:hover {
+  background: #2a334a;
+}
+
+.dark .clay-btn-light:active {
+  transform: scale(0.98);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.6), inset -1px -1px 3px rgba(255, 255, 255, 0.05);
+}
+
+.clay-btn-indigo {
+  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+  box-shadow: 0 8px 18px rgba(67, 56, 202, 0.32), inset 2px 2px 4px rgba(255, 255, 255, 0.5), inset -2px -2px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.clay-btn-indigo:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(67, 56, 202, 0.42), inset 2px 2px 4px rgba(255, 255, 255, 0.6), inset -2px -2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.clay-btn-indigo:active {
+  transform: scale(0.98);
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.35), inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* 5. Chronometer Dial 3D Clay Outer & Inner Disc */
+.clay-disc-outer {
+  background: #f4f7fc;
+  box-shadow: 14px 18px 36px rgba(166, 178, 202, 0.45), -10px -10px 24px rgba(255, 255, 255, 0.95), inset 4px 4px 8px rgba(255, 255, 255, 0.9), inset -4px -4px 8px rgba(166, 178, 202, 0.3);
+}
+
+.dark .clay-disc-outer {
+  background: #181d2a;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.08), inset -3px -3px 6px rgba(0, 0, 0, 0.6);
+}
+
+.clay-disc-inner {
+  background: #f8fafc;
+  box-shadow: 8px 10px 20px rgba(166, 178, 202, 0.3), -6px -6px 16px rgba(255, 255, 255, 0.95), inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(166, 178, 202, 0.2);
+}
+
+.dark .clay-disc-inner {
+  background: #1e2435;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 2px 2px 4px rgba(255, 255, 255, 0.08), inset -2px -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 6. Typography Utilities */
+.font-telemetry-sm {
+  font-family: 'JetBrains Mono', monospace;
+}
+.font-telemetry-md {
+  font-family: 'JetBrains Mono', monospace;
+}
+.font-telemetry-lg {
+  font-family: 'JetBrains Mono', monospace;
+}
+.font-display-hero {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.font-headline-lg {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.font-headline-md {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.font-headline-sm {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Pulse Glow & Animations */
 @keyframes breathe {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.08);
-    opacity: 1;
-    filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.5));
-  }
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.06); opacity: 1; }
 }
 
 .animate-breathe {
   animation: breathe 4s ease-in-out infinite;
 }
 
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.55);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 2.5s infinite;
-}

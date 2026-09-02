@@ -4,12 +4,12 @@ import {
   Pause,
   RotateCcw,
   SkipForward,
-  Clock,
-  Sparkles,
-  Coffee,
   Brain,
-  CheckCircle2,
+  Coffee,
+  Sparkles,
   ChevronDown,
+  Activity,
+  Zap,
 } from 'lucide-react';
 import { useTimer } from '../../context/TimerContext';
 import { useTask } from '../../context/TaskContext';
@@ -41,9 +41,9 @@ export const PomodoroTimer: React.FC = () => {
   const [customFocus, setCustomFocus] = useState<number>(45);
   const [customBreak, setCustomBreak] = useState<number>(10);
 
-  // SVG circular calculations
-  const radius = 130;
-  const circumference = 2 * Math.PI * radius;
+  // SVG circular arc math for 3D Chronometer Disc
+  const radius = 120;
+  const circumference = 2 * Math.PI * radius; // ~753.98
   const progress = totalDuration > 0 ? (totalDuration - timeRemaining) / totalDuration : 0;
   const strokeDashoffset = circumference * (1 - progress);
 
@@ -63,123 +63,193 @@ export const PomodoroTimer: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
-      {/* Main Timer Display Card */}
-      <div className="stitch-card rounded-3xl p-6 sm:p-10 relative overflow-hidden text-center border-white/10">
-        {/* Glow ambient circle */}
-        <div className={`absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
-          mode === 'focus'
-            ? 'bg-violet-600/15'
-            : 'bg-emerald-600/15'
-        }`} />
+    <div className="flex flex-col w-full gap-6 select-none max-w-5xl mx-auto">
+      {/* TOP COCKPIT HEADER RIBBON */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-2 pb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.85)] animate-pulse" />
+          <div className="flex items-baseline gap-2">
+            <span className="font-telemetry-sm text-xs uppercase text-emerald-700 dark:text-emerald-400 font-extrabold tracking-widest">
+              CONSOLE RIG // MK-IV
+            </span>
+            <span className="font-telemetry-sm text-xs text-slate-300 dark:text-slate-600">/</span>
+            <span className="font-telemetry-sm text-xs text-slate-600 dark:text-slate-400 font-semibold tracking-wider">
+              PRECISION AEROSPACE TELEMETRY DECK
+            </span>
+          </div>
+        </div>
 
-        {/* Mode Toggles */}
-        <div className="relative inline-flex p-1 bg-[#121316] border border-white/10 rounded-2xl mb-8">
+        <div className="flex items-center gap-3">
+          <div className="px-3.5 py-1.5 rounded-full clay-pill flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
+            <span className="font-telemetry-sm text-[11px] text-slate-700 dark:text-slate-300 font-bold uppercase tracking-wider">
+              ISO-994 PROTOCOL ACTIVE
+            </span>
+          </div>
+          <div className="px-3.5 py-1.5 rounded-full clay-pill flex items-center gap-1.5">
+            <span className="font-telemetry-sm text-[11px] text-slate-400 font-medium">STATION:</span>
+            <span className="font-telemetry-sm text-[11px] text-orange-600 dark:text-orange-400 font-extrabold">
+              DEEP_STUDY_01
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* MAIN 3D CHRONOMETER MATRIX DECK */}
+      <div className="clay-card rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center border border-white/80 dark:border-white/5 relative overflow-hidden">
+        {/* Telemetry Header */}
+        <div className="w-full flex items-center justify-between mb-6 relative z-10">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-2xl clay-pill flex items-center justify-center">
+              <Activity className="w-4 h-4 text-orange-500" />
+            </div>
+            <span className="font-telemetry-sm text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200 font-bold">
+              CHRONOMETER MATRIX
+            </span>
+          </div>
+
+          {/* Puffy Clay Mini Cycle Indicator */}
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl clay-inset">
+            <span className="font-telemetry-sm text-[11px] text-slate-500 dark:text-slate-400 font-semibold mr-1">
+              CYCLE {todaySessions.length + 1}/4
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(234,88,12,0.7)]" />
+              <span className="w-3 h-3 rounded-full bg-orange-600 shadow-[0_0_10px_rgba(234,88,12,0.9)] animate-pulse" />
+              <span className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700" />
+              <span className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700" />
+            </div>
+          </div>
+        </div>
+
+        {/* Mode Selector Buttons */}
+        <div className="flex items-center justify-center gap-2 mb-6 p-1.5 rounded-2xl clay-inset max-w-md w-full">
           <button
             type="button"
             onClick={() => switchMode('focus')}
-            className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-headline-sm font-bold transition-all cursor-pointer ${
               mode === 'focus'
-                ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/30'
-                : 'text-neutral-400 hover:text-white'
+                ? 'clay-btn-primary text-white'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
             <Brain className="w-4 h-4" />
             <span>Deep Focus</span>
           </button>
-
           <button
             type="button"
             onClick={() => switchMode('short_break')}
-            className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-headline-sm font-bold transition-all cursor-pointer ${
               mode === 'short_break'
-                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30'
-                : 'text-neutral-400 hover:text-white'
+                ? 'clay-btn-indigo text-white'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
             <Coffee className="w-4 h-4" />
             <span>Short Break</span>
           </button>
-
           <button
             type="button"
             onClick={() => switchMode('long_break')}
-            className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-headline-sm font-bold transition-all cursor-pointer ${
               mode === 'long_break'
-                ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-600/30'
-                : 'text-neutral-400 hover:text-white'
+                ? 'clay-btn-light text-slate-800 dark:text-slate-100'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Long Recharge</span>
+            <Sparkles className="w-4 h-4 text-orange-500" />
+            <span>Long Rest</span>
           </button>
         </div>
 
-        {/* Circular Timer Ring */}
-        <div className="relative w-72 h-72 sm:w-80 sm:h-80 mx-auto mb-8 flex items-center justify-center">
-          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 300 300">
-            <defs>
-              <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#06B6D4" />
-              </linearGradient>
-              <linearGradient id="breakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#10B981" />
-                <stop offset="100%" stopColor="#06B6D4" />
-              </linearGradient>
-            </defs>
+        {/* 3D PUFFY CLAY CHRONOMETER DISC */}
+        <div className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-full flex items-center justify-center clay-disc-outer p-4 my-4">
+          <div className="w-full h-full rounded-full clay-inset flex items-center justify-center p-3 relative">
+            {/* SVG Graduation Marks & Progress Arc */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 320 320">
+              <defs>
+                <linearGradient id="clayOrangeGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fb923c" />
+                  <stop offset="50%" stopColor="#ea580c" />
+                  <stop offset="100%" stopColor="#c2410c" />
+                </linearGradient>
+              </defs>
 
-            {/* Background track */}
-            <circle
-              cx="150"
-              cy="150"
-              r={radius}
-              stroke="rgba(255, 255, 255, 0.05)"
-              strokeWidth="10"
-              fill="transparent"
-            />
+              {/* Graduation Tick Marks */}
+              <g className="text-slate-300 dark:text-slate-700" stroke="currentColor" strokeLinecap="round">
+                <line x1="160" y1="16" x2="160" y2="28" stroke="#ea580c" strokeWidth="4" />
+                <line x1="160" y1="292" x2="160" y2="304" strokeWidth="2.5" />
+                <line x1="16" y1="160" x2="28" y2="160" strokeWidth="2.5" />
+                <line x1="292" y1="160" x2="304" y2="160" strokeWidth="2.5" />
+                <line x1="62" y1="62" x2="70" y2="70" strokeWidth="2" />
+                <line x1="258" y1="62" x2="250" y2="70" strokeWidth="2" />
+                <line x1="62" y1="258" x2="70" y2="250" strokeWidth="2" />
+                <line x1="258" y1="258" x2="250" y2="250" strokeWidth="2" />
+              </g>
 
-            {/* Animated stroke */}
-            <circle
-              cx="150"
-              cy="150"
-              r={radius}
-              stroke={mode === 'focus' ? 'url(#timerGradient)' : 'url(#breakGradient)'}
-              strokeWidth="10"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              fill="transparent"
-              className="transition-all duration-1000 ease-linear"
-            />
-          </svg>
+              {/* Circular Progress Arc */}
+              <circle
+                cx="160"
+                cy="160"
+                r={radius}
+                fill="none"
+                stroke="currentColor"
+                className="text-slate-200 dark:text-slate-800"
+                strokeWidth="11"
+                strokeLinecap="round"
+              />
+              <circle
+                cx="160"
+                cy="160"
+                r={radius}
+                fill="none"
+                stroke="url(#clayOrangeGlow)"
+                strokeWidth="11"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                transform="rotate(-90 160 160)"
+                className="transition-all duration-1000 ease-linear"
+              />
+            </svg>
 
-          {/* Time & Mode Label Inside Ring */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-5xl sm:text-6xl font-extrabold tracking-tight text-white font-mono drop-shadow-md">
-              {formattedTime}
-            </span>
-            <span className={`text-xs font-semibold tracking-wider uppercase mt-2 px-3 py-0.5 rounded-full border ${
-              mode === 'focus'
-                ? 'bg-violet-500/15 border-violet-500/30 text-violet-300'
-                : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
-            }`}>
-              {isRunning ? (mode === 'focus' ? 'Focusing' : 'Resting') : 'Paused'}
-            </span>
+            {/* Inner Puffy 3D Clay Capsule */}
+            <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full clay-disc-inner flex flex-col items-center justify-center relative overflow-hidden">
+              <span className="font-telemetry-sm text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5 relative z-10">
+                T-MINUS REMAINING
+              </span>
 
-            {/* Task Tag */}
-            <div className="mt-3 max-w-[200px] truncate text-xs text-neutral-400">
-              {selectedTaskTitle}
+              {/* Digital Readout */}
+              <div className="relative z-10 flex items-baseline">
+                <span className="font-telemetry-lg text-4xl sm:text-5xl leading-tight tracking-tight font-extrabold text-slate-900 dark:text-slate-100">
+                  {formattedTime}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 mt-0.5 text-slate-500 relative z-10">
+                <span className="font-telemetry-sm text-[11px] font-semibold">TOTAL</span>
+                <span className="font-telemetry-sm text-[11px] text-slate-800 dark:text-slate-200 font-extrabold">
+                  {Math.floor(totalDuration / 60)}:00
+                </span>
+              </div>
+
+              {/* Clay Pill Flow Status */}
+              <div className="mt-2.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 clay-pill border border-emerald-200 dark:border-emerald-500/20 flex items-center gap-1.5 relative z-10">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.7)] animate-pulse" />
+                <span className="font-telemetry-sm text-[10px] text-emerald-800 dark:text-emerald-300 font-extrabold uppercase tracking-wide">
+                  {isRunning ? 'FLOW LOCKED' : 'READY TO ENGAGE'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Playback Controls */}
-        <div className="flex items-center justify-center gap-4 mb-6">
+        {/* PLAYBACK CONTROLS */}
+        <div className="flex items-center justify-center gap-4 my-6 z-10">
           <button
             type="button"
             onClick={resetTimer}
-            className="p-3.5 rounded-2xl bg-[#121316] hover:bg-neutral-800 text-neutral-400 hover:text-white border border-white/5 transition-all cursor-pointer shadow-md"
+            className="p-3.5 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
             title="Reset timer"
           >
             <RotateCcw className="w-5 h-5" />
@@ -188,53 +258,55 @@ export const PomodoroTimer: React.FC = () => {
           <button
             type="button"
             onClick={isRunning ? pauseTimer : startTimer}
-            className={`flex items-center justify-center w-16 h-16 rounded-3xl font-bold text-white shadow-xl transition-all transform hover:scale-105 active:scale-95 cursor-pointer ${
-              mode === 'focus'
-                ? 'bg-gradient-to-tr from-violet-600 to-cyan-600 shadow-violet-600/30'
-                : 'bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-emerald-600/30'
-            }`}
+            className="flex items-center justify-center px-8 py-4 rounded-2xl clay-btn-primary text-white font-headline-sm font-extrabold text-base cursor-pointer gap-2 shadow-lg"
           >
             {isRunning ? (
-              <Pause className="w-7 h-7 fill-white" />
+              <>
+                <Pause className="w-6 h-6 fill-white" />
+                <span>PAUSE SESSION</span>
+              </>
             ) : (
-              <Play className="w-7 h-7 fill-white ml-0.5" />
+              <>
+                <Play className="w-6 h-6 fill-white" />
+                <span>START SPRINT</span>
+              </>
             )}
           </button>
 
           <button
             type="button"
             onClick={skipSession}
-            className="p-3.5 rounded-2xl bg-[#121316] hover:bg-neutral-800 text-neutral-400 hover:text-white border border-white/5 transition-all cursor-pointer shadow-md"
+            className="p-3.5 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
             title="Skip to next session"
           >
             <SkipForward className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Task Selection Dropdown */}
-        <div className="max-w-md mx-auto mb-6">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1.5 text-left">
-            Active Study Objective
+        {/* Task Selection Inset */}
+        <div className="w-full max-w-md my-2 z-10">
+          <label className="block font-telemetry-sm text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 text-left">
+            Bound Focus Objective
           </label>
           <div className="relative">
             <select
               value={selectedTaskTitle}
               onChange={e => setSelectedTaskTitle(e.target.value)}
-              className="w-full appearance-none bg-[#121316] border border-white/10 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-neutral-200 focus:outline-none focus:border-violet-500 cursor-pointer"
+              className="w-full appearance-none clay-inset rounded-2xl px-4 py-3 font-body-md text-xs sm:text-sm text-slate-800 dark:text-slate-100 font-semibold focus:outline-none cursor-pointer"
             >
               {tasks.map(t => (
                 <option key={t.id} value={t.title}>
                   {t.completed ? '✓ ' : ''}{t.title} ({t.course || 'General'})
                 </option>
               ))}
-              <option value="General Focus & Homework">General Focus & Deep Reading</option>
+              <option value="General Deep Reading & Problem Sets">General Deep Reading & Problem Sets</option>
             </select>
-            <ChevronDown className="w-4 h-4 text-neutral-500 absolute right-3 top-3 pointer-events-none" />
+            <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-3.5 pointer-events-none" />
           </div>
         </div>
 
-        {/* Preset Selector Chips */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-4 border-t border-white/5">
+        {/* Preset Chips */}
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-4 border-t border-slate-200 dark:border-slate-800 w-full z-10">
           {presets.map(p => {
             const isSel = activePreset.id === p.id;
             return (
@@ -242,10 +314,10 @@ export const PomodoroTimer: React.FC = () => {
                 key={p.id}
                 type="button"
                 onClick={() => selectPreset(p)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-2xl font-telemetry-sm text-xs font-bold transition-all cursor-pointer ${
                   isSel
-                    ? 'bg-violet-600/20 border-violet-500/50 text-violet-300 font-semibold shadow-sm'
-                    : 'bg-[#121316] border-white/5 text-neutral-400 hover:text-neutral-200'
+                    ? 'clay-btn-primary text-white'
+                    : 'clay-pill text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
                 {p.name} ({p.focusMinutes}m/{p.breakMinutes}m)
@@ -255,31 +327,33 @@ export const PomodoroTimer: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowCustomModal(true)}
-            className="px-3 py-1.5 rounded-xl text-xs text-neutral-400 hover:text-white bg-[#121316] border border-white/5 hover:border-white/15 transition-colors cursor-pointer"
+            className="px-3.5 py-1.5 rounded-2xl clay-btn-light font-telemetry-sm text-xs text-slate-600 dark:text-slate-400 font-bold cursor-pointer"
           >
             + Custom Interval
           </button>
         </div>
       </div>
 
-      {/* 40 Hz Gamma Neural Entrainment Panel */}
+      {/* AMBIENT & BINAURAL SOUNDBOARD CONTROLS */}
       <GammaWaveControls />
 
-      {/* Daily Completed Focus Metrics */}
+      {/* DAILY TELEMETRY LOG SUMMARY */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="stitch-card rounded-2xl p-4">
-          <span className="block text-xs font-semibold text-neutral-400 uppercase">Sprints Finished Today</span>
-          <span className="text-2xl font-bold text-white mt-1 block">{todaySessions.length} Blocks</span>
+        <div className="clay-card rounded-3xl p-5 border border-white/80 dark:border-white/5 flex flex-col justify-between">
+          <span className="font-telemetry-sm text-xs font-bold text-slate-500 uppercase">Sprints Finished Today</span>
+          <span className="font-telemetry-lg text-2xl font-black text-slate-900 dark:text-slate-100 mt-1 block">
+            {todaySessions.length} Blocks
+          </span>
         </div>
-        <div className="stitch-card rounded-2xl p-4">
-          <span className="block text-xs font-semibold text-neutral-400 uppercase">Focus Minutes Locked</span>
-          <span className="text-2xl font-bold text-violet-400 mt-1 block">
+        <div className="clay-card rounded-3xl p-5 border border-white/80 dark:border-white/5 flex flex-col justify-between">
+          <span className="font-telemetry-sm text-xs font-bold text-slate-500 uppercase">Focus Minutes Locked</span>
+          <span className="font-telemetry-lg text-2xl font-black text-orange-600 dark:text-orange-400 mt-1 block">
             {todaySessions.reduce((a, s) => a + s.durationMinutes, 0)} Mins
           </span>
         </div>
-        <div className="stitch-card rounded-2xl p-4">
-          <span className="block text-xs font-semibold text-neutral-400 uppercase">Focus Points Earned</span>
-          <span className="text-2xl font-bold text-cyan-400 mt-1 block">
+        <div className="clay-card rounded-3xl p-5 border border-white/80 dark:border-white/5 flex flex-col justify-between">
+          <span className="font-telemetry-sm text-xs font-bold text-slate-500 uppercase">Points Bank Earned</span>
+          <span className="font-telemetry-lg text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1 block">
             +{todaySessions.reduce((a, s) => a + s.pointsEarned, 0)} FP
           </span>
         </div>
@@ -287,43 +361,49 @@ export const PomodoroTimer: React.FC = () => {
 
       {/* Custom Duration Modal */}
       {showCustomModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-          <div className="bg-[#191a1f] border border-white/10 rounded-2xl p-6 w-full max-w-sm">
-            <h3 className="text-base font-bold text-white mb-4">Set Custom Sprint Duration</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="clay-card rounded-3xl p-6 w-full max-w-sm border border-white/80 dark:border-white/5">
+            <h3 className="font-headline-md text-base font-extrabold text-slate-900 dark:text-slate-100 mb-4">
+              Set Custom Sprint Interval
+            </h3>
             <form onSubmit={handleCustomSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs text-neutral-400 mb-1">Focus Interval (Minutes)</label>
+                <label className="block font-telemetry-sm text-xs text-slate-500 mb-1 font-bold">
+                  Focus Interval (Minutes)
+                </label>
                 <input
                   type="number"
                   min="5"
                   max="180"
                   value={customFocus}
                   onChange={e => setCustomFocus(parseInt(e.target.value) || 25)}
-                  className="w-full bg-[#121316] border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
+                  className="w-full clay-inset rounded-2xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 text-sm font-telemetry-md focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs text-neutral-400 mb-1">Break Interval (Minutes)</label>
+                <label className="block font-telemetry-sm text-xs text-slate-500 mb-1 font-bold">
+                  Break Interval (Minutes)
+                </label>
                 <input
                   type="number"
                   min="1"
                   max="60"
                   value={customBreak}
                   onChange={e => setCustomBreak(parseInt(e.target.value) || 5)}
-                  className="w-full bg-[#121316] border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
+                  className="w-full clay-inset rounded-2xl px-3.5 py-2.5 text-slate-800 dark:text-slate-100 text-sm font-telemetry-md focus:outline-none"
                 />
               </div>
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowCustomModal(false)}
-                  className="flex-1 py-2 rounded-xl bg-neutral-800 text-neutral-300 text-xs font-medium cursor-pointer"
+                  className="flex-1 py-2.5 rounded-2xl clay-btn-light text-slate-700 dark:text-slate-300 text-xs font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold cursor-pointer"
+                  className="flex-1 py-2.5 rounded-2xl clay-btn-primary text-white text-xs font-bold cursor-pointer"
                 >
                   Apply Preset
                 </button>
@@ -335,3 +415,4 @@ export const PomodoroTimer: React.FC = () => {
     </div>
   );
 };
+

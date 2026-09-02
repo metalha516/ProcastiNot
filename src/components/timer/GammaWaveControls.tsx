@@ -16,26 +16,28 @@ export const GammaWaveControls: React.FC = () => {
   const { gammaAudio, updateGammaSettings, toggleGammaAudio, isRunning } = useTimer();
 
   return (
-    <div className="stitch-card rounded-2xl p-6 border border-violet-500/20 bg-gradient-to-b from-[#191a1f] to-[#14151a]">
+    <div className="clay-card rounded-3xl p-6 border border-white/80 dark:border-white/5 transition-all">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-xl border transition-colors ${
+          <div className={`p-3 rounded-2xl clay-pill flex items-center justify-center ${
             gammaAudio.enabled
-              ? 'bg-violet-500/20 border-violet-500/40 text-violet-300'
-              : 'bg-neutral-800/60 border-neutral-700/50 text-neutral-400'
+              ? 'text-orange-600 dark:text-orange-400'
+              : 'text-slate-400'
           }`}>
             <Headphones className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-white">40 Hz Gamma Wave Audio Engine</h2>
-              <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">
-                Neural Entrainment
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="font-headline-md text-base font-extrabold text-slate-900 dark:text-slate-100">
+                40 Hz Gamma Audio Synthesizer
+              </h2>
+              <span className="font-telemetry-sm px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full clay-pill bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400">
+                Neural Soundboard
               </span>
             </div>
-            <p className="text-xs text-neutral-400">
-              Synchronizes prefrontal cortical oscillations to enhance working memory and sustained concentration.
+            <p className="font-body-md text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">
+              Entrains prefrontal cortical oscillations to sustain deep concentration and focus.
             </p>
           </div>
         </div>
@@ -44,21 +46,21 @@ export const GammaWaveControls: React.FC = () => {
         <button
           type="button"
           onClick={toggleGammaAudio}
-          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl font-telemetry-sm text-xs font-bold transition-all cursor-pointer ${
             gammaAudio.enabled
-              ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/30'
-              : 'bg-neutral-800 text-neutral-400 hover:text-white border border-neutral-700'
+              ? 'clay-btn-primary text-white shadow-md'
+              : 'clay-btn-light text-slate-600 dark:text-slate-400'
           }`}
         >
           {gammaAudio.enabled ? (
             <>
               <Volume2 className="w-4 h-4 animate-pulse" />
-              <span>Audio Active</span>
+              <span>AUDIO ACTIVE</span>
             </>
           ) : (
             <>
               <VolumeX className="w-4 h-4" />
-              <span>Muted</span>
+              <span>MUTED</span>
             </>
           )}
         </button>
@@ -69,17 +71,19 @@ export const GammaWaveControls: React.FC = () => {
         <button
           type="button"
           onClick={() => updateGammaSettings({ mode: 'binaural' })}
-          className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+          className={`p-4 rounded-2xl text-left transition-all cursor-pointer ${
             gammaAudio.mode === 'binaural'
-              ? 'bg-violet-500/10 border-violet-500/40 text-white'
-              : 'bg-[#121316] border-white/5 text-neutral-400 hover:text-neutral-200'
+              ? 'clay-card-subtle border-2 border-orange-500/50'
+              : 'clay-inset border border-transparent'
           }`}
         >
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold text-violet-300">Binaural Beats (Headphones)</span>
-            <Radio className="w-3.5 h-3.5 text-violet-400" />
+            <span className="font-headline-sm text-xs font-extrabold text-slate-900 dark:text-slate-100">
+              Binaural Beats (Headphones)
+            </span>
+            <Radio className="w-4 h-4 text-orange-500" />
           </div>
-          <p className="text-[11px] text-neutral-400 leading-relaxed">
+          <p className="font-body-md text-[11px] text-slate-500 font-medium leading-relaxed">
             Plays 216 Hz (left) and 256 Hz (right). Brain derives 40 Hz phase delta.
           </p>
         </button>
@@ -87,25 +91,27 @@ export const GammaWaveControls: React.FC = () => {
         <button
           type="button"
           onClick={() => updateGammaSettings({ mode: 'isochronic' })}
-          className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+          className={`p-4 rounded-2xl text-left transition-all cursor-pointer ${
             gammaAudio.mode === 'isochronic'
-              ? 'bg-cyan-500/10 border-cyan-500/40 text-white'
-              : 'bg-[#121316] border-white/5 text-neutral-400 hover:text-neutral-200'
+              ? 'clay-card-subtle border-2 border-indigo-500/50'
+              : 'clay-inset border border-transparent'
           }`}
         >
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold text-cyan-300">Isochronic Pulses (Speakers/Any)</span>
-            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="font-headline-sm text-xs font-extrabold text-slate-900 dark:text-slate-100">
+              Isochronic Pulses (Speakers/Any)
+            </span>
+            <Zap className="w-4 h-4 text-indigo-500" />
           </div>
-          <p className="text-[11px] text-neutral-400 leading-relaxed">
-            Rhythmic 40 Hz amplitude modulation. Effective without stereo isolation.
+          <p className="font-body-md text-[11px] text-slate-500 font-medium leading-relaxed">
+            Rhythmic 40 Hz amplitude modulation. Effective without headphone isolation.
           </p>
         </button>
       </div>
 
       {/* Layerable Soundscapes */}
       <div className="mb-5">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+        <label className="block font-telemetry-sm text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
           Layered Focus Soundscapes
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -123,13 +129,13 @@ export const GammaWaveControls: React.FC = () => {
                 key={item.id}
                 type="button"
                 onClick={() => updateGammaSettings({ ambientType: item.id as any })}
-                className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-2 p-3 rounded-2xl font-telemetry-sm text-xs font-bold transition-all cursor-pointer ${
                   isSel
-                    ? 'bg-violet-600/20 border-violet-500/50 text-white'
-                    : 'bg-[#121316] border-white/5 text-neutral-400 hover:text-neutral-200'
+                    ? 'clay-btn-primary text-white'
+                    : 'clay-pill text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isSel ? 'text-violet-400' : 'text-neutral-500'}`} />
+                <Icon className={`w-4 h-4 ${isSel ? 'text-white' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
               </button>
             );
@@ -138,11 +144,11 @@ export const GammaWaveControls: React.FC = () => {
       </div>
 
       {/* Volume Mixers */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#121316] p-4 rounded-xl border border-white/5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 clay-inset p-4 rounded-2xl border border-white/60 dark:border-white/5">
         <div>
-          <div className="flex justify-between text-xs mb-1.5">
-            <span className="font-medium text-neutral-300">40 Hz Gamma Tone</span>
-            <span className="font-mono text-violet-400">{Math.round(gammaAudio.gammaVolume * 100)}%</span>
+          <div className="flex justify-between font-telemetry-sm text-xs mb-1.5 font-bold">
+            <span className="text-slate-700 dark:text-slate-300">40 Hz Gamma Tone</span>
+            <span className="text-orange-600 dark:text-orange-400">{Math.round(gammaAudio.gammaVolume * 100)}%</span>
           </div>
           <input
             type="range"
@@ -151,14 +157,14 @@ export const GammaWaveControls: React.FC = () => {
             step="0.05"
             value={gammaAudio.gammaVolume}
             onChange={e => updateGammaSettings({ gammaVolume: parseFloat(e.target.value) })}
-            className="w-full accent-violet-500 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
+            className="w-full accent-orange-500 h-2 bg-slate-200 dark:bg-slate-800 rounded-lg cursor-pointer"
           />
         </div>
 
         <div>
-          <div className="flex justify-between text-xs mb-1.5">
-            <span className="font-medium text-neutral-300">Ambient Background</span>
-            <span className="font-mono text-cyan-400">{Math.round(gammaAudio.ambientVolume * 100)}%</span>
+          <div className="flex justify-between font-telemetry-sm text-xs mb-1.5 font-bold">
+            <span className="text-slate-700 dark:text-slate-300">Ambient Background</span>
+            <span className="text-indigo-600 dark:text-indigo-400">{Math.round(gammaAudio.ambientVolume * 100)}%</span>
           </div>
           <input
             type="range"
@@ -167,29 +173,30 @@ export const GammaWaveControls: React.FC = () => {
             step="0.05"
             value={gammaAudio.ambientVolume}
             onChange={e => updateGammaSettings({ ambientVolume: parseFloat(e.target.value) })}
-            className="w-full accent-cyan-500 h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
+            className="w-full accent-indigo-500 h-2 bg-slate-200 dark:bg-slate-800 rounded-lg cursor-pointer"
           />
         </div>
       </div>
 
-      {/* Pulse visualizer bar */}
+      {/* Pulse Visualizer Bar */}
       {gammaAudio.enabled && isRunning && (
         <div className="mt-4 flex items-center justify-center gap-1">
           {[...Array(16)].map((_, i) => (
             <div
               key={i}
-              className="w-1.5 bg-gradient-to-t from-violet-600 to-cyan-400 rounded-full animate-pulse"
+              className="w-1.5 bg-gradient-to-t from-orange-500 to-emerald-400 rounded-full animate-pulse"
               style={{
                 height: `${Math.max(6, Math.sin(i + Date.now() / 200) * 18 + 12)}px`,
                 animationDelay: `${i * 0.1}s`,
               }}
             />
           ))}
-          <span className="ml-2 text-[11px] font-mono text-neutral-400">
-            40 Hz Carrier Active
+          <span className="ml-2 font-telemetry-sm text-[11px] text-slate-500 font-bold">
+            40 Hz Carrier Wave Active
           </span>
         </div>
       )}
     </div>
   );
 };
+
