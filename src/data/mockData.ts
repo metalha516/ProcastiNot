@@ -154,8 +154,12 @@ export const initialBlockedDomains: BlockedDomain[] = [
   { id: 'b_3', domain: 'youtube.com', name: 'YouTube Shorts & Feed', icon: 'play-circle', attemptsToday: 9, minutesSaved: 54, category: 'video', isDefault: true },
   { id: 'b_4', domain: 'reddit.com', name: 'Reddit', icon: 'message-square', attemptsToday: 4, minutesSaved: 25, category: 'social', isDefault: true },
   { id: 'b_5', domain: 'x.com', name: 'X / Twitter', icon: 'twitter', attemptsToday: 6, minutesSaved: 31, category: 'news', isDefault: true },
-  { id: 'b_6', domain: 'netflix.com', name: 'Netflix', icon: 'tv', attemptsToday: 1, minutesSaved: 30, category: 'video', isDefault: true },
-  { id: 'b_7', domain: 'twitch.tv', name: 'Twitch', icon: 'radio', attemptsToday: 3, minutesSaved: 20, category: 'gaming', isDefault: true },
+  { id: 'b_6', domain: 'facebook.com', name: 'Facebook', icon: 'share-2', attemptsToday: 5, minutesSaved: 35, category: 'social', isDefault: true },
+  { id: 'b_7', domain: 'netflix.com', name: 'Netflix', icon: 'tv', attemptsToday: 1, minutesSaved: 30, category: 'video', isDefault: true },
+  { id: 'b_8', domain: 'twitch.tv', name: 'Twitch', icon: 'radio', attemptsToday: 3, minutesSaved: 20, category: 'gaming', isDefault: true },
+  { id: 'b_9', domain: 'threads.net', name: 'Threads', icon: 'message-circle', attemptsToday: 2, minutesSaved: 15, category: 'social', isDefault: true },
+  { id: 'b_10', domain: 'discord.com', name: 'Discord', icon: 'message-square', attemptsToday: 8, minutesSaved: 40, category: 'social', isDefault: true },
+  { id: 'b_11', domain: 'pinterest.com', name: 'Pinterest', icon: 'image', attemptsToday: 2, minutesSaved: 15, category: 'social', isDefault: true },
 ];
 
 export const initialRooms: VirtualRoom[] = [

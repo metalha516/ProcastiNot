@@ -31,13 +31,14 @@ class GammaAudioEngine {
   private gammaVol: number = 0.35;
   private ambientVol: number = 0.25;
 
-  private initContext() {
+  public async initContext(): Promise<AudioContext | null> {
     if (!this.ctx) {
       const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtxClass) return null;
       this.ctx = new AudioCtxClass();
       
       this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+      this.masterGain.gain.setValueAtTime(1.0, this.ctx.currentTime);
       this.masterGain.connect(this.ctx.destination);
 
       this.gammaGain = this.ctx.createGain();
@@ -50,18 +51,29 @@ class GammaAudioEngine {
     }
 
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      try {
+        await this.ctx.resume();
+      } catch {
+        // Will resume on next user gesture
+      }
     }
+    return this.ctx;
   }
 
-  public start(
+  public async start(
     mode: 'binaural' | 'isochronic' = 'binaural',
     ambient: 'none' | 'pink' | 'brown' | 'rain' | 'library' = 'none',
     gammaVolume: number = 0.35,
     ambientVolume: number = 0.25
   ) {
-    this.initContext();
+    await this.initContext();
     if (!this.ctx) return;
+
+    if (this.ctx.state === 'suspended') {
+      try {
+        await this.ctx.resume();
+      } catch {}
+    }
 
     this.stopAudioNodes();
 
@@ -160,9 +172,10 @@ class GammaAudioEngine {
   private startAmbient(type: 'pink' | 'brown' | 'rain' | 'library') {
     if (!this.ctx || !this.ambientGain) return;
 
-    // Generate 5 seconds of seamless noise buffer
-    const bufferSize = this.ctx.sampleRate * 5;
-    const buffer = this.ctx.createBuffer(2, bufferSize, this.ctx.sampleRate);
+    // Generate 6 seconds of seamless looping noise buffer
+    const sampleRate = this.ctx.sampleRate;
+    const bufferSize = sampleRate * 6;
+    const buffer = this.ctx.createBuffer(2, bufferSize, sampleRate);
     const leftData = buffer.getChannelData(0);
     const rightData = buffer.getChannelData(1);
 
@@ -176,10 +189,10 @@ class GammaAudioEngine {
         b3 = 0.86650 * b3 + white * 0.3104856;
         b4 = 0.55000 * b4 + white * 0.5329522;
         b5 = -0.7616 * b5 - white * 0.0168980;
-        const pink = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.05;
+        const pink = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.12;
         b6 = white * 0.115926;
         leftData[i] = pink;
-        rightData[i] = pink * 0.98;
+        rightData[i] = pink * 0.96;
       }
     } else if (type === 'brown') {
       let lastOutL = 0.0;
@@ -189,31 +202,48 @@ class GammaAudioEngine {
         const whiteR = Math.random() * 2 - 1;
         lastOutL = (lastOutL + 0.02 * whiteL) / 1.02;
         lastOutR = (lastOutR + 0.02 * whiteR) / 1.02;
-        leftData[i] = lastOutL * 1.8;
-        rightData[i] = lastOutR * 1.8;
+        leftData[i] = lastOutL * 2.8;
+        rightData[i] = lastOutR * 2.8;
       }
     } else if (type === 'rain') {
-      // Gentle patter: Pink noise + randomized droplet impulses
-      let b0 = 0, b1 = 0, b2 = 0;
+      // High-fidelity natural rain synthesis:
+      // Layer 1: continuous pink/brown rain curtain wash
+      // Layer 2: randomized spatial rain droplet impacts with subtle resonance
+      let b0L = 0, b1L = 0, b2L = 0;
+      let b0R = 0, b1R = 0, b2R = 0;
       for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99 * b0 + white * 0.05;
-        b1 = 0.95 * b1 + white * 0.1;
-        b2 = 0.85 * b2 + white * 0.2;
-        const base = (b0 + b1 + b2) * 0.04;
-        const drop = Math.random() > 0.997 ? (Math.random() * 0.12) : 0;
-        leftData[i] = base + drop;
-        rightData[i] = base + (Math.random() > 0.997 ? (Math.random() * 0.12) : 0);
+        const whiteL = Math.random() * 2 - 1;
+        const whiteR = Math.random() * 2 - 1;
+        
+        b0L = 0.99 * b0L + whiteL * 0.06;
+        b1L = 0.95 * b1L + whiteL * 0.12;
+        b2L = 0.85 * b2L + whiteL * 0.25;
+        const washL = (b0L + b1L + b2L) * 0.16;
+
+        b0R = 0.99 * b0R + whiteR * 0.06;
+        b1R = 0.95 * b1R + whiteR * 0.12;
+        b2R = 0.85 * b2R + whiteR * 0.25;
+        const washR = (b0R + b1R + b2R) * 0.16;
+
+        // Occasional randomized raindrop strikes
+        const dropL = Math.random() > 0.994 ? (Math.random() * 0.35) : 0;
+        const dropR = Math.random() > 0.994 ? (Math.random() * 0.35) : 0;
+
+        leftData[i] = washL + dropL;
+        rightData[i] = washR + dropR;
       }
     } else if (type === 'library') {
-      // Deep low-pass hum with subtle air conditioning resonance
-      let lastOut = 0.0;
+      // Cozy study cafe & library: warm low-frequency air hum + gentle room tone
+      let lastOutL = 0.0;
+      let lastOutR = 0.0;
       for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        lastOut = (lastOut + 0.012 * white) / 1.012;
-        const acHum = Math.sin((2 * Math.PI * 60 * i) / this.ctx.sampleRate) * 0.02;
-        leftData[i] = lastOut * 1.2 + acHum;
-        rightData[i] = lastOut * 1.15 + acHum;
+        const whiteL = Math.random() * 2 - 1;
+        const whiteR = Math.random() * 2 - 1;
+        lastOutL = (lastOutL + 0.015 * whiteL) / 1.015;
+        lastOutR = (lastOutR + 0.015 * whiteR) / 1.015;
+        const roomHum = Math.sin((2 * Math.PI * 55 * i) / sampleRate) * 0.03;
+        leftData[i] = lastOutL * 1.8 + roomHum;
+        rightData[i] = lastOutR * 1.75 + roomHum;
       }
     }
 
@@ -221,10 +251,22 @@ class GammaAudioEngine {
     this.ambientSource.buffer = buffer;
     this.ambientSource.loop = true;
 
-    // Smooth filter
+    // Smooth filtering tailored for pleasant listening
     const filter = this.ctx.createBiquadFilter();
-    filter.type = type === 'rain' ? 'bandpass' : 'lowpass';
-    filter.frequency.setValueAtTime(type === 'rain' ? 1200 : (type === 'brown' ? 350 : 800), this.ctx.currentTime);
+    if (type === 'rain') {
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2600, this.ctx.currentTime);
+      filter.Q.setValueAtTime(0.7, this.ctx.currentTime);
+    } else if (type === 'brown') {
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(450, this.ctx.currentTime);
+    } else if (type === 'library') {
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(900, this.ctx.currentTime);
+    } else {
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1600, this.ctx.currentTime);
+    }
 
     this.ambientSource.connect(filter);
     filter.connect(this.ambientGain);

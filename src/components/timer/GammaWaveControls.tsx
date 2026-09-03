@@ -70,7 +70,7 @@ export const GammaWaveControls: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
         <button
           type="button"
-          onClick={() => updateGammaSettings({ mode: 'binaural' })}
+          onClick={() => updateGammaSettings({ mode: 'binaural', enabled: true })}
           className={`p-4 rounded-2xl text-left transition-all cursor-pointer ${
             gammaAudio.mode === 'binaural'
               ? 'clay-card-subtle border-2 border-orange-500/50'
@@ -90,7 +90,7 @@ export const GammaWaveControls: React.FC = () => {
 
         <button
           type="button"
-          onClick={() => updateGammaSettings({ mode: 'isochronic' })}
+          onClick={() => updateGammaSettings({ mode: 'isochronic', enabled: true })}
           className={`p-4 rounded-2xl text-left transition-all cursor-pointer ${
             gammaAudio.mode === 'isochronic'
               ? 'clay-card-subtle border-2 border-indigo-500/50'
@@ -128,7 +128,7 @@ export const GammaWaveControls: React.FC = () => {
               <button
                 key={item.id}
                 type="button"
-                onClick={() => updateGammaSettings({ ambientType: item.id as any })}
+                onClick={() => updateGammaSettings({ ambientType: item.id as any, enabled: true })}
                 className={`flex items-center justify-center gap-2 p-3 rounded-2xl font-telemetry-sm text-xs font-bold transition-all cursor-pointer ${
                   isSel
                     ? 'clay-btn-primary text-white'
@@ -179,7 +179,7 @@ export const GammaWaveControls: React.FC = () => {
       </div>
 
       {/* Pulse Visualizer Bar */}
-      {gammaAudio.enabled && isRunning && (
+      {gammaAudio.enabled && (
         <div className="mt-4 flex items-center justify-center gap-1">
           {[...Array(16)].map((_, i) => (
             <div

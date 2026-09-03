@@ -120,7 +120,7 @@ export const TimerProvider: React.FC<{
 
   // Audio synchronization with timer state
   useEffect(() => {
-    if (isRunning && gammaAudio.enabled) {
+    if (gammaAudio.enabled) {
       gammaEngine.start(
         gammaAudio.mode,
         gammaAudio.ambientType,
@@ -130,7 +130,7 @@ export const TimerProvider: React.FC<{
     } else {
       gammaEngine.stop();
     }
-  }, [isRunning, gammaAudio.enabled, gammaAudio.mode, gammaAudio.ambientType]);
+  }, [gammaAudio.enabled, gammaAudio.mode, gammaAudio.ambientType]);
 
   // Volume slider dynamic sync
   useEffect(() => {
@@ -304,10 +304,12 @@ export const TimerProvider: React.FC<{
   };
 
   const updateGammaSettings = (updates: Partial<GammaAudioState>) => {
+    gammaEngine.initContext();
     setGammaAudio(prev => ({ ...prev, ...updates }));
   };
 
   const toggleGammaAudio = () => {
+    gammaEngine.initContext();
     setGammaAudio(prev => ({ ...prev, enabled: !prev.enabled }));
   };
 

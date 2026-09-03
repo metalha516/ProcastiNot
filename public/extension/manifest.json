@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "ProcastiNot — Browser Distraction Shield",
+  "version": "1.0.0",
+  "description": "Arrests social media and doom-scrolling links across your browser tabs and initiates a 10-second Second-Thought mindfulness gate in ProcastiNot.",
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.instagram.com/*",
+    "*://*.tiktok.com/*",
+    "*://*.twitter.com/*",
+    "*://*.x.com/*",
+    "*://*.reddit.com/*",
+    "*://*.facebook.com/*",
+    "*://*.youtube.com/shorts*",
+    "*://*.twitch.tv/*",
+    "*://*.netflix.com/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_procastinot",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "ProcastiNot Shield Active"
+  }
+}

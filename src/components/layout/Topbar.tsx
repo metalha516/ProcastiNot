@@ -8,6 +8,8 @@ import {
   LogOut,
   Sparkles,
   ChevronDown,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useGamification } from '../../context/GamificationContext';
@@ -17,17 +19,24 @@ interface TopbarProps {
   onToggleSidebar: () => void;
   onOpenAuth: () => void;
   onNavigate: (tab: string) => void;
+  isDark?: boolean;
+  onToggleTheme?: () => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAuth, onNavigate }) => {
+export const Topbar: React.FC<TopbarProps> = ({
+  onToggleSidebar,
+  onOpenAuth,
+  onNavigate,
+  isDark = true,
+  onToggleTheme,
+}) => {
   const { user, isAuthenticated, logout } = useAuth();
   const { streak, focusPoints, notifications, markNotificationRead } = useGamification();
-  const { isRunning, timeRemaining, mode } = useTimer();
+  const { isRunning, timeRemaining, mode, gammaAudio, toggleGammaAudio, updateGammaSettings } = useTimer();
 
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isAudioActive, setIsAudioActive] = useState<boolean>(false);
 
   const unreadNotifs = notifications.filter(n => !n.read);
 
@@ -36,7 +45,11 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAuth, onN
   const timerStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
   const toggleRainAudio = () => {
-    setIsAudioActive(prev => !prev);
+    if (!gammaAudio.enabled) {
+      updateGammaSettings({ enabled: true, ambientType: 'rain' });
+    } else {
+      toggleGammaAudio();
+    }
   };
 
   return (
@@ -112,13 +125,13 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAuth, onN
           type="button"
           onClick={toggleRainAudio}
           className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-2xl clay-btn-light text-slate-700 dark:text-slate-300 font-semibold cursor-pointer transition-all ${
-            isAudioActive ? 'ring-2 ring-indigo-500/50 bg-indigo-50 dark:bg-indigo-950/40' : ''
+            gammaAudio.enabled ? 'ring-2 ring-indigo-500/50 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400' : ''
           }`}
           title="Toggle Ambient Rain & Binaural Soundscape"
         >
-          <Volume2 className={`w-4 h-4 ${isAudioActive ? 'text-indigo-600 animate-pulse' : 'text-indigo-500 dark:text-indigo-400'}`} />
+          <Volume2 className={`w-4 h-4 ${gammaAudio.enabled ? 'text-indigo-600 animate-pulse' : 'text-indigo-500 dark:text-indigo-400'}`} />
           <span className="font-telemetry-sm text-xs font-bold">
-            {isAudioActive ? 'Rain Playing' : 'Rain Binaural'}
+            {gammaAudio.enabled ? 'Rain Playing' : 'Rain Binaural'}
           </span>
         </button>
 
@@ -134,6 +147,23 @@ export const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, onOpenAuth, onN
             {focusPoints.toLocaleString()} FP
           </span>
         </button>
+
+        {/* Mobile & Desktop Theme Toggle Button */}
+        {onToggleTheme && (
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="p-2 rounded-2xl clay-btn-light text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-amber-400 cursor-pointer transition-all flex items-center justify-center"
+            title={isDark ? 'Switch to Pure White Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle Theme Mode"
+          >
+            {isDark ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4 text-indigo-600" />
+            )}
+          </button>
+        )}
 
         {/* Notifications */}
         <div className="relative">

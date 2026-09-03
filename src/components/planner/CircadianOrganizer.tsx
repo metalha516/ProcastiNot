@@ -312,16 +312,14 @@ export const CircadianOrganizer: React.FC = () => {
         </form>
       )}
 
-      {/* Task Cards */}
+      {/* Task Cards: Active Tasks on Top, Completed Tasks Below */}
       <div className="space-y-3">
-        {tasks.map(task => {
+        {tasks.filter(t => !t.completed).map(task => {
           const alignment = isTaskEnergyAligned(task);
           return (
             <div
               key={task.id}
-              className={`clay-card-subtle rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-white/60 dark:border-white/5 transition-all ${
-                task.completed ? 'opacity-60' : ''
-              }`}
+              className="clay-card-subtle rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-white/60 dark:border-white/5 transition-all"
             >
               <div className="flex items-start gap-4 flex-1">
                 <button
@@ -329,23 +327,22 @@ export const CircadianOrganizer: React.FC = () => {
                   onClick={() => toggleTaskComplete(task.id)}
                   className="mt-0.5 w-6 h-6 rounded-xl clay-btn-light flex items-center justify-center cursor-pointer flex-shrink-0"
                 >
-                  {task.completed ? (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-500" />
-                  ) : (
-                    <Circle className="w-5 h-5 text-slate-400" />
-                  )}
+                  <Circle className="w-5 h-5 text-slate-400" />
                 </button>
 
                 <div className="space-y-1 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className={`font-headline-sm text-sm sm:text-base font-bold ${
-                      task.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-slate-100'
-                    }`}>
+                    <h3 className="font-headline-sm text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
                       {task.title}
                     </h3>
                     <span className="font-telemetry-sm text-xs px-2.5 py-0.5 rounded-full clay-pill text-slate-600 dark:text-slate-400 font-bold">
                       {task.course}
                     </span>
+                    {task.examRelated && (
+                      <span className="font-telemetry-sm text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                        ⚡ Urgent Runway
+                      </span>
+                    )}
                   </div>
 
                   {task.description && (
@@ -384,7 +381,67 @@ export const CircadianOrganizer: React.FC = () => {
             </div>
           );
         })}
+
+        {tasks.filter(t => !t.completed).length === 0 && (
+          <div className="clay-card-subtle p-8 rounded-3xl text-center text-slate-500">
+            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+            <p className="font-headline-sm text-sm font-bold text-slate-800 dark:text-slate-200">
+              All active tasks cleared!
+            </p>
+            <p className="font-body-md text-xs text-slate-500 mt-1">
+              Add a new sprint above or check completed tasks below.
+            </p>
+          </div>
+        )}
       </div>
+
+      {/* Completed Tasks Placed Below */}
+      {tasks.filter(t => t.completed).length > 0 && (
+        <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="font-headline-sm text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <span>Completed Sprints ({tasks.filter(t => t.completed).length})</span>
+            </span>
+          </div>
+
+          <div className="space-y-2.5 opacity-70">
+            {tasks.filter(t => t.completed).map(task => (
+              <div
+                key={task.id}
+                className="clay-card-subtle rounded-3xl p-4 flex items-center justify-between gap-4 border border-white/40 dark:border-white/5"
+              >
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleTaskComplete(task.id)}
+                    className="w-6 h-6 rounded-xl clay-btn-light flex items-center justify-center cursor-pointer flex-shrink-0"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-500" />
+                  </button>
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-headline-sm text-sm font-bold text-slate-400 line-through truncate">
+                      {task.title}
+                    </span>
+                    <span className="font-telemetry-sm text-xs text-slate-500">
+                      {task.course} • {task.estimatedMinutes}m logged
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => deleteTask(task.id)}
+                  className="p-1.5 rounded-xl clay-btn-light text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
+                  title="Delete task"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

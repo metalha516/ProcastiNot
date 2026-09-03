@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=instagram.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||instagram.com",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=tiktok.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||tiktok.com",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=x.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||x.com",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=x.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||twitter.com",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=reddit.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||reddit.com",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=facebook.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||facebook.com",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 7,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=youtube.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||youtube.com/shorts",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 8,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=twitch.tv"
+      }
+    },
+    "condition": {
+      "urlFilter": "||twitch.tv",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 9,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "http://localhost:5173/?blocked=netflix.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||netflix.com",
+      "resourceTypes": ["main_frame"]
+    }
+  }
+]

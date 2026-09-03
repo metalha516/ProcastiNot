@@ -28,11 +28,50 @@ interface TaskContextType {
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
+export const sortTasks = (taskList: Task[], window: 'peak' | 'moderate' | 'trough' = 'peak'): Task[] => {
+  return [...taskList].sort((a, b) => {
+    // 1. Completed tasks always sink to the bottom
+    if (a.completed !== b.completed) {
+      return a.completed ? 1 : -1;
+    }
+
+    // 2. Urgency comparison
+    const aDue = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+    const bDue = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+    const aUrgent = a.examRelated || (aDue - Date.now() < 86400000 * 3);
+    const bUrgent = b.examRelated || (bDue - Date.now() < 86400000 * 3);
+
+    if (aUrgent !== bUrgent) {
+      return aUrgent ? -1 : 1;
+    }
+
+    if (Math.abs(aDue - bDue) > 3600000 * 6) {
+      return aDue - bDue; // Earliest due first
+    }
+
+    // 3. Cognitive Energy weight (deep_focus > medium > low during peak/moderate)
+    const energyWeights: Record<TaskEnergyLevel, number> = {
+      deep_focus: 3,
+      medium: 2,
+      low: 1,
+    };
+    const aEnergy = energyWeights[a.energy] || 1;
+    const bEnergy = energyWeights[b.energy] || 1;
+    if (aEnergy !== bEnergy) {
+      return bEnergy - aEnergy; // Higher energy first
+    }
+
+    // 4. Difficulty weight
+    const diffWeights = { epic: 4, hard: 3, medium: 2, easy: 1 };
+    return (diffWeights[b.difficulty] || 0) - (diffWeights[a.difficulty] || 0);
+  });
+};
+
 export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const chronotype = user?.chronotype || 'night_owl';
 
-  const [tasks, setTasks] = useState<Task[]>(() => {
+  const [rawTasks, setRawTasks] = useState<Task[]>(() => {
     const saved = localStorage.getItem('procastinot_tasks');
     if (saved) {
       try { return JSON.parse(saved); } catch {}
@@ -144,6 +183,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const circadianStatus = getCircadianStatus();
+  const tasks = sortTasks(rawTasks, circadianStatus.currentWindow);
 
   const isTaskEnergyAligned = (task: Task) => {
     if (circadianStatus.currentWindow === 'peak') {
@@ -188,7 +228,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
       completedMinutes: 0,
       completed: false,
     };
-    setTasks(prev => {
+    setRawTasks(prev => {
       const updated = [newTask, ...prev];
       localStorage.setItem('procastinot_tasks', JSON.stringify(updated));
       return updated;
@@ -196,7 +236,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const toggleTaskComplete = (taskId: string) => {
-    setTasks(prev => {
+    setRawTasks(prev => {
       const updated = prev.map(t =>
         t.id === taskId
           ? { ...t, completed: !t.completed, completedMinutes: !t.completed ? t.estimatedMinutes : 0 }
@@ -208,7 +248,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const deleteTask = (taskId: string) => {
-    setTasks(prev => {
+    setRawTasks(prev => {
       const updated = prev.filter(t => t.id !== taskId);
       localStorage.setItem('procastinot_tasks', JSON.stringify(updated));
       return updated;

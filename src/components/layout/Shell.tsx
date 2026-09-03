@@ -12,8 +12,11 @@ import { PerformanceDeltaCurve } from '../gamification/PerformanceDeltaCurve';
 import { LeaderboardArena } from '../gamification/LeaderboardArena';
 import { RewardShop } from '../gamification/RewardShop';
 import { AuthModal } from '../auth/AuthModal';
+import { useBrowserShield } from '../../hooks/useBrowserShield';
 
 export const Shell: React.FC = () => {
+  useBrowserShield();
+
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
@@ -96,6 +99,8 @@ export const Shell: React.FC = () => {
             onToggleSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
             onOpenAuth={() => setIsAuthModalOpen(true)}
             onNavigate={setActiveTab}
+            isDark={isDark}
+            onToggleTheme={toggleTheme}
           />
 
           <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full overflow-y-auto">

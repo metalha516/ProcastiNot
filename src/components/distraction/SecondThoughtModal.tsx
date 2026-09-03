@@ -35,6 +35,22 @@ export const SecondThoughtModal: React.FC = () => {
     return () => clearInterval(timer);
   }, [interceptionActive]);
 
+  const handleConfirmVisit = () => {
+    const domainToOpen = interceptedDomain;
+    resolveInterception(false, selectedReason);
+    if (domainToOpen) {
+      const targetUrl = domainToOpen.startsWith('http') ? domainToOpen : `https://${domainToOpen}`;
+      const a = document.createElement('a');
+      a.href = targetUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.setAttribute('data-bypass-shield', 'true');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
   if (!interceptionActive) return null;
 
   return (
@@ -164,7 +180,7 @@ export const SecondThoughtModal: React.FC = () => {
               </div>
               <button
                 type="button"
-                onClick={() => resolveInterception(false, selectedReason)}
+                onClick={handleConfirmVisit}
                 className="text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 underline cursor-pointer"
               >
                 Confirm Intentional Visit
