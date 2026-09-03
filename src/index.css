@@ -2,12 +2,12 @@
 
 @layer base {
   :root {
-    --bg-base: #eef2f9;
-    --bg-surface: #f4f7fc;
-    --bg-card: #f4f7fc;
-    --bg-card-hover: #ffffff;
-    --border-subtle: rgba(255, 255, 255, 0.6);
-    --border-strong: rgba(166, 178, 202, 0.3);
+    --bg-base: #ffffff;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --border-subtle: rgba(226, 232, 240, 0.8);
+    --border-strong: rgba(203, 213, 225, 0.8);
     --primary: #ea580c;
   }
 
@@ -53,23 +53,29 @@
 /* ---------------------------------------------------- */
 
 /* 1. Clay Cards */
-.clay-card {
-  background: #f4f7fc;
-  box-shadow: 10px 14px 28px rgba(166, 178, 202, 0.4), -8px -8px 20px rgba(255, 255, 255, 0.95), inset 3px 3px 6px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(166, 178, 202, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+.clay-card,
+.stitch-card {
+  background: #ffffff;
+  box-shadow: 
+    0 12px 30px -4px rgba(148, 163, 184, 0.22),
+    0 4px 10px -2px rgba(148, 163, 184, 0.12),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.95),
+    inset -2px -2px 4px rgba(226, 232, 240, 0.45);
+  border: 1px solid rgba(226, 232, 240, 0.85);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dark .clay-card {
+.dark .clay-card,
+.dark .stitch-card {
   background: #181d2a;
   box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.75), 0 4px 12px rgba(0, 0, 0, 0.5), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.08), inset -2px -2px 5px rgba(0, 0, 0, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .clay-card-subtle {
-  background: #ebf0f8;
-  box-shadow: 6px 8px 18px rgba(166, 178, 202, 0.35), -5px -5px 14px rgba(255, 255, 255, 0.9), inset 2px 2px 4px rgba(255, 255, 255, 0.8), inset -2px -2px 4px rgba(166, 178, 202, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: #f8fafc;
+  box-shadow: 0 6px 16px -2px rgba(148, 163, 184, 0.18), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.9), inset -1.5px -1.5px 3px rgba(226, 232, 240, 0.3);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .dark .clay-card-subtle {
@@ -80,9 +86,9 @@
 
 /* 2. Clay Insets (Well/Recessed fields) */
 .clay-inset {
-  background: #e8eef8;
-  box-shadow: inset 4px 4px 8px rgba(166, 178, 202, 0.45), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: #f1f5f9;
+  box-shadow: inset 2px 2px 5px rgba(148, 163, 184, 0.25), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.7);
 }
 
 .dark .clay-inset {
@@ -93,9 +99,9 @@
 
 /* 3. Clay Pills & Badges */
 .clay-pill {
-  background: #f0f4fb;
-  box-shadow: 4px 6px 12px rgba(166, 178, 202, 0.35), -3px -3px 8px rgba(255, 255, 255, 0.9), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.9), inset -1.5px -1.5px 3px rgba(166, 178, 202, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: #ffffff;
+  box-shadow: 0 3px 8px rgba(148, 163, 184, 0.2), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.9), inset -1.5px -1.5px 3px rgba(226, 232, 240, 0.3);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .dark .clay-pill {
@@ -122,9 +128,9 @@
 }
 
 .clay-btn-light {
-  background: #f0f4fb;
-  box-shadow: 5px 6px 14px rgba(166, 178, 202, 0.4), -4px -4px 10px rgba(255, 255, 255, 0.95), inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(166, 178, 202, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: #ffffff;
+  box-shadow: 0 3px 8px rgba(148, 163, 184, 0.2), inset 1.5px 1.5px 3px rgba(255, 255, 255, 0.9), inset -1.5px -1.5px 3px rgba(226, 232, 240, 0.3);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
@@ -134,7 +140,7 @@
 
 .clay-btn-light:active {
   transform: scale(0.98);
-  box-shadow: inset 3px 3px 6px rgba(166, 178, 202, 0.4), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+  box-shadow: inset 2px 2px 4px rgba(148, 163, 184, 0.25), inset -2px -2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .dark .clay-btn-light {
@@ -170,23 +176,34 @@
 
 /* 5. Chronometer Dial 3D Clay Outer & Inner Disc */
 .clay-disc-outer {
-  background: #f4f7fc;
-  box-shadow: 14px 18px 36px rgba(166, 178, 202, 0.45), -10px -10px 24px rgba(255, 255, 255, 0.95), inset 4px 4px 8px rgba(255, 255, 255, 0.9), inset -4px -4px 8px rgba(166, 178, 202, 0.3);
+  background: #ffffff;
+  box-shadow: 
+    0 16px 36px -6px rgba(148, 163, 184, 0.3),
+    0 6px 16px -4px rgba(148, 163, 184, 0.2),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.95),
+    inset -3px -3px 6px rgba(203, 213, 225, 0.35);
+  border: 1px solid rgba(226, 232, 240, 0.85);
 }
 
 .dark .clay-disc-outer {
   background: #181d2a;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 2px 2px 4px rgba(255, 255, 255, 0.08), inset -3px -3px 6px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .clay-disc-inner {
-  background: #f8fafc;
-  box-shadow: 8px 10px 20px rgba(166, 178, 202, 0.3), -6px -6px 16px rgba(255, 255, 255, 0.95), inset 2px 2px 4px rgba(255, 255, 255, 0.9), inset -2px -2px 4px rgba(166, 178, 202, 0.2);
+  background: #ffffff;
+  box-shadow: 
+    0 8px 20px -3px rgba(148, 163, 184, 0.22),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.95),
+    inset -2px -2px 4px rgba(203, 213, 225, 0.25);
+  border: 1px solid rgba(226, 232, 240, 0.75);
 }
 
 .dark .clay-disc-inner {
   background: #1e2435;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 2px 2px 4px rgba(255, 255, 255, 0.08), inset -2px -2px 4px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* 6. Typography Utilities */
@@ -221,4 +238,3 @@
 .animate-breathe {
   animation: breathe 4s ease-in-out infinite;
 }
-

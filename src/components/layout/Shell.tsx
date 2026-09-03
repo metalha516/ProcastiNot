@@ -19,14 +19,22 @@ export const Shell: React.FC = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isDark, setIsDark] = useState<boolean>(() => {
+    const saved = localStorage.getItem('procastinot_theme');
+    if (saved !== null) {
+      return saved === 'dark';
+    }
     return document.documentElement.classList.contains('dark');
   });
 
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+      localStorage.setItem('procastinot_theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      localStorage.setItem('procastinot_theme', 'light');
     }
   }, [isDark]);
 
@@ -67,7 +75,7 @@ export const Shell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#eef2f9] dark:bg-[#0c1017] text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-[#0c1017] text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 relative max-w-[1920px] mx-auto w-full">
         {/* Claymorphic Tactile Sidebar */}
         <Sidebar
@@ -102,4 +110,3 @@ export const Shell: React.FC = () => {
     </div>
   );
 };
-

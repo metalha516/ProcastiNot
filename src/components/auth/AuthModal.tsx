@@ -36,15 +36,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-md bg-[#191a1f] border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 text-center overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-[#191a1f] border border-slate-200 dark:border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 text-center overflow-hidden">
         {/* Glow ambient background */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
@@ -54,21 +54,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 to-cyan-500 mx-auto flex items-center justify-center text-white shadow-lg shadow-violet-600/30 mb-3">
             <Lock className="w-6 h-6" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">
             Student Focus Ecosystem
           </h2>
-          <p className="text-xs text-neutral-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-neutral-400 mt-1">
             Access your circadian task schedule, virtual rooms, and focus rewards.
           </p>
         </div>
 
         {/* Tab switcher */}
-        <div className="flex bg-[#121316] p-1 rounded-xl border border-white/5 mb-6">
+        <div className="flex bg-slate-100 dark:bg-[#121316] p-1 rounded-xl border border-slate-200/80 dark:border-white/5 mb-6">
           <button
             type="button"
             onClick={() => setActiveTab('login')}
             className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === 'login' ? 'bg-violet-600 text-white shadow-sm' : 'text-neutral-400 hover:text-white'
+              activeTab === 'login' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Email / Password
@@ -77,7 +77,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             type="button"
             onClick={() => setActiveTab('sso')}
             className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === 'sso' ? 'bg-violet-600 text-white shadow-sm' : 'text-neutral-400 hover:text-white'
+              activeTab === 'sso' ? 'bg-violet-600 text-white shadow-sm' : 'text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Institutional SSO
@@ -89,7 +89,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           type="button"
           onClick={handleGoogleLogin}
           disabled={isLoading}
-          className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-white text-neutral-900 font-semibold text-xs sm:text-sm hover:bg-neutral-100 transition-all cursor-pointer shadow-md mb-4"
+          className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl bg-slate-50 dark:bg-white text-slate-800 dark:text-neutral-900 font-semibold text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-neutral-100 transition-all cursor-pointer shadow-sm border border-slate-200 dark:border-transparent mb-4"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -113,30 +113,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         </button>
 
         <div className="flex items-center my-4">
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="px-3 text-[11px] text-neutral-500 uppercase">Or continue with</span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-slate-200 dark:bg-white/10" />
+          <span className="px-3 text-[11px] text-slate-400 dark:text-neutral-500 uppercase font-medium">Or continue with</span>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-white/10" />
         </div>
 
         {activeTab === 'login' ? (
           <form onSubmit={handleEmailLogin} className="space-y-3">
             <div className="text-left">
-              <label className="block text-xs text-neutral-400 mb-1">Student / University Email</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-neutral-400 mb-1">Student / University Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full bg-[#121316] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-neutral-200 focus:outline-none focus:border-violet-500"
+                className="w-full bg-slate-50 dark:bg-[#121316] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:border-violet-500 transition-colors"
                 required
               />
             </div>
             <div className="text-left">
-              <label className="block text-xs text-neutral-400 mb-1">Password</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-neutral-400 mb-1">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full bg-[#121316] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-neutral-200 focus:outline-none focus:border-violet-500"
+                className="w-full bg-slate-50 dark:bg-[#121316] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:border-violet-500 transition-colors"
                 required
               />
             </div>
@@ -151,11 +151,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         ) : (
           <form onSubmit={handleSSOLogin} className="space-y-3">
             <div className="text-left">
-              <label className="block text-xs text-neutral-400 mb-1">Select Institution</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-neutral-400 mb-1">Select Institution</label>
               <select
                 value={institution}
                 onChange={e => setInstitution(e.target.value)}
-                className="w-full bg-[#121316] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-neutral-200 focus:outline-none focus:border-violet-500"
+                className="w-full bg-slate-50 dark:bg-[#121316] border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:border-violet-500 transition-colors"
               >
                 <option value="Stanford University">Stanford University (SUNet ID)</option>
                 <option value="MIT">Massachusetts Institute of Technology (Kerberos)</option>
@@ -166,13 +166,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               </select>
             </div>
             <div className="text-left">
-              <label className="block text-xs text-neutral-400 mb-1">Institutional Email</label>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-neutral-400 mb-1">Institutional Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="netid@institution.edu"
-                className="w-full bg-[#121316] border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-neutral-200 focus:outline-none focus:border-violet-500"
+                className="w-full bg-slate-50 dark:bg-[#121316] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 dark:text-neutral-200 focus:outline-none focus:border-violet-500 transition-colors"
                 required
               />
             </div>
