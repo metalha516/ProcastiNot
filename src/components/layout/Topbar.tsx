@@ -53,26 +53,26 @@ export const Topbar: React.FC<TopbarProps> = ({
   };
 
   return (
-    <header className="h-16 clay-card rounded-2xl flex items-center justify-between px-4 sm:px-6 my-3 mx-4 border border-white/70 dark:border-white/5 transition-all select-none z-30">
+    <header className="h-16 clay-card rounded-2xl flex items-center justify-between px-2.5 sm:px-6 my-2 sm:my-3 mx-2 sm:mx-4 border border-white/70 dark:border-white/5 transition-all select-none z-30">
       {/* Left: Mobile Sidebar Toggle & Search Bar */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 sm:flex-initial mr-1.5 sm:mr-0">
         <button
           type="button"
           onClick={onToggleSidebar}
-          className="p-2 rounded-xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 lg:hidden cursor-pointer"
+          className="p-2 rounded-xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 lg:hidden cursor-pointer flex-shrink-0"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* Command Search Bar */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl clay-inset w-44 sm:w-64 md:w-80 border border-white/50 dark:border-white/[0.03]">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-2xl clay-inset w-full sm:w-64 md:w-80 border border-white/50 dark:border-white/[0.03] min-w-0 max-w-36 sm:max-w-none">
           <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search commands or modules..."
-            className="bg-transparent border-none outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 w-full focus:ring-0"
+            placeholder="Search..."
+            className="bg-transparent border-none outline-none text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 w-full min-w-0 focus:ring-0"
           />
           <span className="hidden sm:inline font-telemetry-sm text-[10px] px-2 py-0.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold shadow-sm flex-shrink-0">
             ⌘K
@@ -101,20 +101,20 @@ export const Topbar: React.FC<TopbarProps> = ({
       </div>
 
       {/* Right Controls */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
         {/* Fire Streak Counter */}
         <button
           type="button"
           onClick={() => onNavigate('habits-matrix')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl clay-pill bg-white dark:bg-[#1f2537] cursor-pointer"
+          className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-xl sm:rounded-2xl clay-pill bg-white dark:bg-[#1f2537] cursor-pointer flex-shrink-0"
           title={`${streak} day focus streak!`}
         >
-          <Flame className="w-4 h-4 text-orange-500 fill-orange-500" />
+          <Flame className="w-4 h-4 text-orange-500 fill-orange-500 flex-shrink-0" />
           <div className="flex items-baseline gap-0.5">
-            <span className="font-telemetry-md text-sm font-extrabold text-orange-600 dark:text-orange-400 tracking-tight">
+            <span className="font-telemetry-md text-xs sm:text-sm font-extrabold text-orange-600 dark:text-orange-400 tracking-tight">
               {streak}
             </span>
-            <span className="font-telemetry-sm text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase">
+            <span className="hidden sm:inline font-telemetry-sm text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase ml-0.5">
               d streak
             </span>
           </div>
@@ -153,7 +153,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           <button
             type="button"
             onClick={onToggleTheme}
-            className="p-2 rounded-2xl clay-btn-light text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-amber-400 cursor-pointer transition-all flex items-center justify-center"
+            className="p-1.5 sm:p-2 rounded-xl sm:rounded-2xl clay-btn-light text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-amber-400 cursor-pointer transition-all flex items-center justify-center flex-shrink-0"
             title={isDark ? 'Switch to Pure White Light Mode' : 'Switch to Dark Mode'}
             aria-label="Toggle Theme Mode"
           >
@@ -166,22 +166,22 @@ export const Topbar: React.FC<TopbarProps> = ({
         )}
 
         {/* Notifications */}
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <button
             type="button"
             onClick={() => setShowNotifications(prev => !prev)}
-            className="p-2 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 relative cursor-pointer"
+            className="p-1.5 sm:p-2 rounded-xl sm:rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 relative cursor-pointer"
             title="Notifications"
           >
             <Bell className="w-4 h-4" />
             {unreadNotifs.length > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-orange-500 ring-2 ring-white dark:ring-slate-900 animate-pulse" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-orange-500 ring-2 ring-white dark:ring-slate-900 animate-pulse" />
             )}
           </button>
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 clay-card rounded-3xl p-4 z-50 animate-fade-in text-left border border-white/80 dark:border-white/5">
+            <div className="absolute right-0 mt-2 w-72 sm:w-96 clay-card rounded-3xl p-4 z-50 animate-fade-in text-left border border-white/80 dark:border-white/5">
               <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-3">
                 <span className="font-headline-sm text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-100">
                   Telemetry Alerts
@@ -216,16 +216,16 @@ export const Topbar: React.FC<TopbarProps> = ({
 
         {/* Profile Avatar & Menu */}
         {isAuthenticated && user ? (
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button
               type="button"
               onClick={() => setShowProfileMenu(prev => !prev)}
-              className="p-1 rounded-full clay-pill bg-white dark:bg-[#1f2537] cursor-pointer flex items-center"
+              className="p-0.5 sm:p-1 rounded-full clay-pill bg-white dark:bg-[#1f2537] cursor-pointer flex items-center"
             >
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover"
               />
             </button>
 
@@ -278,7 +278,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           <button
             type="button"
             onClick={onOpenAuth}
-            className="px-4 py-2 rounded-2xl clay-btn-primary text-white text-xs font-bold cursor-pointer"
+            className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl clay-btn-primary text-white text-xs font-bold cursor-pointer flex-shrink-0"
           >
             Sign In
           </button>
