@@ -52,12 +52,12 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
           {/* Greeting & Mechanical Timestamp */}
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 clay-pill font-telemetry-sm text-xs font-extrabold border border-emerald-200 dark:border-emerald-500/20">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 clay-pill font-telemetry-sm text-xs font-extrabold border border-emerald-300 dark:border-emerald-500/20">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)] animate-pulse" />
                 <span>CIRCADIAN PEAK WINDOW</span>
               </span>
-              <span className="text-slate-300 dark:text-slate-700 font-bold">|</span>
-              <span className="font-telemetry-sm text-xs text-slate-600 dark:text-slate-400 font-bold">
+              <span className="text-slate-400 dark:text-slate-600 font-bold">|</span>
+              <span className="font-telemetry-sm text-xs text-slate-700 dark:text-slate-400 font-extrabold">
                 ALPHA STATE: {circadianStatus.energyScore}% SYNCED
               </span>
             </div>
@@ -74,7 +74,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
               </div>
             </div>
 
-            <p className="font-body-md text-sm text-slate-600 dark:text-slate-400 max-w-xl font-medium">
+            <p className="font-body-md text-sm text-slate-700 dark:text-slate-300 max-w-xl font-semibold">
               Cognitive load balanced. High-leverage window runs active before neural recharge protocol engages.
             </p>
           </div>
@@ -90,13 +90,13 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
                     className="relative w-9 h-14 bg-white dark:bg-[#1f2537] rounded-xl clay-pill flex items-center justify-center border border-white/60 dark:border-white/5"
                   >
                     <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-orange-400/20" />
-                    <span className="font-telemetry-lg text-2xl font-extrabold text-slate-800 dark:text-slate-100">
+                    <span className="font-telemetry-lg text-2xl font-black text-slate-900 dark:text-slate-100">
                       {digit}
                     </span>
                   </div>
                 ))}
               </div>
-              <span className="font-telemetry-sm text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold mt-2">
+              <span className="font-telemetry-sm text-[10px] text-slate-600 dark:text-slate-400 uppercase tracking-wider font-extrabold mt-2">
                 Days Streak Tumbler
               </span>
             </div>
@@ -129,8 +129,8 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         {/* Gauge 1: Focus Today (Analog Arc Meter) */}
         <div className="clay-card p-6 rounded-3xl border border-white/80 dark:border-white/5 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-2">
-            <span className="font-label-md text-xs uppercase tracking-wider font-extrabold text-slate-700 dark:text-slate-300">
+          <div className="flex items-center justify-between text-slate-700 dark:text-slate-400 mb-2">
+            <span className="font-label-md text-xs uppercase tracking-wider font-extrabold text-slate-800 dark:text-slate-200">
               Focus Today
             </span>
             <Activity className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
@@ -148,20 +148,20 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
                   strokeWidth="10"
                 />
                 <circle
-                  className="text-emerald-500"
+                  className="text-emerald-500 transition-all duration-1000"
                   cx="50"
                   cy="50"
                   r="38"
                   fill="transparent"
                   stroke="currentColor"
                   strokeWidth="10"
-                  strokeDasharray="238.7"
-                  strokeDashoffset="60"
+                  strokeDasharray={238.76}
+                  strokeDashoffset={238.76 * (1 - 0.75)}
                   strokeLinecap="round"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-telemetry-sm text-sm text-emerald-600 dark:text-emerald-400 font-extrabold">
+                <span className="font-telemetry-sm text-sm text-emerald-700 dark:text-emerald-400 font-extrabold">
                   75%
                 </span>
               </div>
@@ -170,19 +170,19 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
               <span className="font-telemetry-lg text-2xl text-slate-900 dark:text-slate-100 font-black tracking-tight">
                 3h 45m
               </span>
-              <span className="font-telemetry-sm text-xs text-slate-500 font-bold">Target: 5h 00m</span>
+              <span className="font-telemetry-sm text-xs text-slate-600 dark:text-slate-400 font-bold">Target: 5h 00m</span>
             </div>
           </div>
           <div className="flex items-center justify-between pt-1 font-telemetry-sm text-[11px] clay-inset px-3 py-2 rounded-xl">
-            <span className="text-slate-600 dark:text-slate-400 font-bold">RUNNING ACCEL</span>
+            <span className="text-slate-700 dark:text-slate-300 font-bold">RUNNING ACCEL</span>
             <span className="text-emerald-600 dark:text-emerald-400 font-black">+22m vs Ystd</span>
           </div>
         </div>
 
         {/* Gauge 2: Deep Work Blocks */}
         <div className="clay-card p-6 rounded-3xl border border-white/80 dark:border-white/5 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-2">
-            <span className="font-label-md text-xs uppercase tracking-wider font-extrabold text-slate-700 dark:text-slate-300">
+          <div className="flex items-center justify-between text-slate-700 dark:text-slate-400 mb-2">
+            <span className="font-label-md text-xs uppercase tracking-wider font-extrabold text-slate-800 dark:text-slate-200">
               Deep Work Blocks
             </span>
             <Zap className="w-5 h-5 text-orange-500" />
@@ -195,22 +195,22 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
                 </div>
               ))}
               {[50, 50].map((mins, idx) => (
-                <div key={idx} className="h-9 flex-1 rounded-xl bg-white/60 dark:bg-slate-800/60 clay-pill flex items-center justify-center opacity-60">
-                  <span className="font-telemetry-sm text-[10px] text-slate-400 font-bold">{mins}m</span>
+                <div key={idx} className="h-9 flex-1 rounded-xl bg-white/80 dark:bg-slate-800/60 clay-pill flex items-center justify-center border border-slate-200 dark:border-white/5">
+                  <span className="font-telemetry-sm text-[10px] text-slate-600 dark:text-slate-400 font-extrabold">{mins}m</span>
                 </div>
               ))}
             </div>
           </div>
           <div className="flex items-center justify-between font-telemetry-sm text-xs">
-            <span className="text-slate-500 font-bold">COMPLETED RATIO</span>
+            <span className="text-slate-600 dark:text-slate-400 font-extrabold">COMPLETED RATIO</span>
             <span className="text-orange-600 dark:text-orange-400 font-black">4 OF 6 CYCLES</span>
           </div>
         </div>
 
         {/* Gauge 3: Focus Points & Rewards */}
         <div className="clay-card p-6 rounded-3xl border border-white/80 dark:border-white/5 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-2">
-            <span className="font-label-md text-xs uppercase tracking-wider font-extrabold text-slate-700 dark:text-slate-300">
+          <div className="flex items-center justify-between text-slate-700 dark:text-slate-400 mb-2">
+            <span className="font-label-md text-xs uppercase tracking-wider font-extrabold text-slate-800 dark:text-slate-200">
               Points Bank
             </span>
             <span className="px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 clay-pill font-telemetry-sm text-[10px] font-extrabold">
@@ -410,4 +410,3 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
     </div>
   );
 };
-

@@ -78,7 +78,7 @@ export const Shell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0c1017] text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-[#0c1017] text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
       <div className="flex flex-1 relative max-w-[1920px] mx-auto w-full">
         {/* Claymorphic Tactile Sidebar */}
         <Sidebar
