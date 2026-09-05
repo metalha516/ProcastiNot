@@ -96,69 +96,75 @@ export const PomodoroTimer: React.FC = () => {
       </div>
 
       {/* MAIN 3D CHRONOMETER MATRIX DECK */}
-      <div className="clay-card rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center border border-white/80 dark:border-white/5 relative overflow-hidden">
+      <div className="clay-card rounded-3xl p-4 sm:p-8 flex flex-col items-center justify-center border border-white/80 dark:border-white/5 relative overflow-hidden">
         {/* Telemetry Header */}
-        <div className="w-full flex items-center justify-between mb-6 relative z-10">
+        <div className="w-full flex items-center justify-between mb-5 sm:mb-6 relative z-10">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-2xl clay-pill flex items-center justify-center">
-              <Activity className="w-4 h-4 text-orange-500" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl clay-pill flex items-center justify-center shrink-0">
+              <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" />
             </div>
-            <span className="font-telemetry-sm text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200 font-bold">
+            <span className="font-telemetry-sm text-[11px] sm:text-xs tracking-wider uppercase text-slate-800 dark:text-slate-200 font-bold">
               CHRONOMETER MATRIX
             </span>
           </div>
 
           {/* Puffy Clay Mini Cycle Indicator */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl clay-inset">
-            <span className="font-telemetry-sm text-[11px] text-slate-500 dark:text-slate-400 font-semibold mr-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-2xl clay-inset shrink-0">
+            <span className="font-telemetry-sm text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold mr-0.5 sm:mr-1">
               CYCLE {todaySessions.length + 1}/4
             </span>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(234,88,12,0.7)]" />
-              <span className="w-3 h-3 rounded-full bg-orange-600 shadow-[0_0_10px_rgba(234,88,12,0.9)] animate-pulse" />
-              <span className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700" />
-              <span className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700" />
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(234,88,12,0.7)]" />
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-orange-600 shadow-[0_0_10px_rgba(234,88,12,0.9)] animate-pulse" />
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-300 dark:bg-slate-700" />
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-300 dark:bg-slate-700" />
             </div>
           </div>
         </div>
 
         {/* Mode Selector Buttons */}
-        <div className="flex items-center justify-center gap-2 mb-6 p-1.5 rounded-2xl clay-inset max-w-md w-full">
+        <div className="flex items-center justify-center gap-1 sm:gap-2 mb-6 p-1 sm:p-1.5 rounded-2xl clay-inset max-w-md w-full">
           <button
             type="button"
             onClick={() => switchMode('focus')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-headline-sm font-bold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-headline-sm font-bold transition-all cursor-pointer whitespace-nowrap min-w-0 ${
               mode === 'focus'
-                ? 'clay-btn-primary text-white'
+                ? 'clay-btn-primary text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
-            <Brain className="w-4 h-4" />
-            <span>Deep Focus</span>
+            <Brain className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="whitespace-nowrap">
+              <span className="hidden min-[380px]:inline">Deep </span>Focus
+            </span>
           </button>
           <button
             type="button"
             onClick={() => switchMode('short_break')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-headline-sm font-bold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-headline-sm font-bold transition-all cursor-pointer whitespace-nowrap min-w-0 ${
               mode === 'short_break'
-                ? 'clay-btn-indigo text-white'
+                ? 'clay-btn-indigo text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
-            <Coffee className="w-4 h-4" />
-            <span>Short Break</span>
+            <Coffee className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="whitespace-nowrap">
+              <span className="hidden min-[380px]:inline">Short </span>Break
+            </span>
           </button>
           <button
             type="button"
             onClick={() => switchMode('long_break')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-headline-sm font-bold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-headline-sm font-bold transition-all cursor-pointer whitespace-nowrap min-w-0 ${
               mode === 'long_break'
-                ? 'clay-btn-light text-slate-800 dark:text-slate-100'
+                ? 'clay-btn-light text-slate-800 dark:text-slate-100 shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-orange-500" />
-            <span>Long Rest</span>
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500 shrink-0" />
+            <span className="whitespace-nowrap">
+              <span className="hidden min-[380px]:inline">Long </span>Rest
+            </span>
           </button>
         </div>
 
@@ -245,29 +251,29 @@ export const PomodoroTimer: React.FC = () => {
         </div>
 
         {/* PLAYBACK CONTROLS */}
-        <div className="flex items-center justify-center gap-4 my-6 z-10">
+        <div className="flex items-center justify-center gap-2.5 sm:gap-4 my-5 sm:my-6 z-10 w-full max-w-sm">
           <button
             type="button"
             onClick={resetTimer}
-            className="p-3.5 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
+            className="p-3 sm:p-3.5 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer shrink-0"
             title="Reset timer"
           >
-            <RotateCcw className="w-5 h-5" />
+            <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           <button
             type="button"
             onClick={isRunning ? pauseTimer : startTimer}
-            className="flex items-center justify-center px-8 py-4 rounded-2xl clay-btn-primary text-white font-headline-sm font-extrabold text-base cursor-pointer gap-2 shadow-lg"
+            className="flex-1 flex items-center justify-center px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl clay-btn-primary text-white font-headline-sm font-extrabold text-sm sm:text-base cursor-pointer gap-2 shadow-lg whitespace-nowrap"
           >
             {isRunning ? (
               <>
-                <Pause className="w-6 h-6 fill-white" />
+                <Pause className="w-5 h-5 sm:w-6 sm:h-6 fill-white" />
                 <span>PAUSE SESSION</span>
               </>
             ) : (
               <>
-                <Play className="w-6 h-6 fill-white" />
+                <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-white" />
                 <span>START SPRINT</span>
               </>
             )}
@@ -276,10 +282,10 @@ export const PomodoroTimer: React.FC = () => {
           <button
             type="button"
             onClick={skipSession}
-            className="p-3.5 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
+            className="p-3 sm:p-3.5 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer shrink-0"
             title="Skip to next session"
           >
-            <SkipForward className="w-5 h-5" />
+            <SkipForward className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
