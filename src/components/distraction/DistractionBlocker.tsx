@@ -86,26 +86,26 @@ export const DistractionBlocker: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
       {/* Top Banner & Status */}
-      <div className="clay-card rounded-3xl p-6 relative overflow-hidden border border-slate-200/80 dark:border-white/5">
+      <div className="clay-card rounded-3xl p-4 sm:p-6 relative overflow-hidden border border-slate-200/80 dark:border-white/5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className={`p-3.5 rounded-2xl clay-pill border transition-colors ${
+          <div className="flex items-start gap-3 sm:gap-4 min-w-0">
+            <div className={`p-2.5 sm:p-3.5 rounded-2xl clay-pill border transition-colors shrink-0 ${
               isRunning && mode === 'focus'
                 ? 'text-emerald-600 dark:text-emerald-400'
                 : 'text-orange-600 dark:text-orange-400'
             }`}>
               {isRunning && mode === 'focus' ? (
-                <ShieldCheck className="w-8 h-8 animate-pulse" />
+                <ShieldCheck className="w-6 h-6 sm:w-8 sm:h-8 animate-pulse" />
               ) : (
-                <ShieldAlert className="w-8 h-8" />
+                <ShieldAlert className="w-6 h-6 sm:w-8 sm:h-8" />
               )}
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                <h1 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">
                   Anti-Distraction Shield & Browser Interceptor
                 </h1>
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider clay-pill ${
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider clay-pill whitespace-nowrap shrink-0 ${
                   isRunning && mode === 'focus'
                     ? 'text-emerald-600 dark:text-emerald-300'
                     : 'text-slate-600 dark:text-slate-400'
@@ -119,30 +119,30 @@ export const DistractionBlocker: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 clay-inset p-2 rounded-2xl flex-shrink-0">
-            <div className="px-3 py-1.5 text-center">
+          <div className="flex items-center justify-around sm:justify-center gap-2 clay-inset p-2 rounded-2xl self-start sm:self-auto shrink-0 w-full sm:w-auto">
+            <div className="px-3 py-1 text-center">
               <span className="block text-[10px] text-slate-500 uppercase font-bold">Resisted</span>
-              <span className="text-lg font-bold text-orange-600 dark:text-orange-400 font-telemetry-sm">{totalAttempts}</span>
+              <span className="text-base sm:text-lg font-bold text-orange-600 dark:text-orange-400 font-telemetry-sm">{totalAttempts}</span>
             </div>
             <div className="h-8 w-px bg-slate-300 dark:bg-white/10" />
-            <div className="px-3 py-1.5 text-center">
+            <div className="px-3 py-1 text-center">
               <span className="block text-[10px] text-slate-500 uppercase font-bold">Saved</span>
-              <span className="text-lg font-bold text-indigo-600 dark:text-cyan-400 font-telemetry-sm">{Math.round(totalMinutesSaved / 60 * 10) / 10}h</span>
+              <span className="text-base sm:text-lg font-bold text-indigo-600 dark:text-cyan-400 font-telemetry-sm">{Math.round(totalMinutesSaved / 60 * 10) / 10}h</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Live Browser Link Interceptor Testbed */}
-      <div className="clay-card rounded-3xl p-6 border border-orange-500/20 bg-gradient-to-r from-orange-50/60 via-white to-amber-50/60 dark:from-violet-950/20 dark:via-[#191a1f] dark:to-cyan-950/20">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Globe className="w-5 h-5 text-orange-500" />
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+      <div className="clay-card rounded-3xl p-4 sm:p-6 border border-orange-500/20 bg-gradient-to-r from-orange-50/60 via-white to-amber-50/60 dark:from-violet-950/20 dark:via-[#191a1f] dark:to-cyan-950/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
+          <div className="flex items-start gap-2.5 min-w-0">
+            <Globe className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+            <h2 className="text-base font-bold text-slate-900 dark:text-white leading-snug">
               Live Browser Link Interceptor (Click to Test Real Links)
             </h2>
           </div>
-          <span className="text-xs text-orange-600 dark:text-orange-400 font-mono clay-pill px-2.5 py-0.5 rounded-full font-bold">
+          <span className="self-start sm:self-auto text-[11px] sm:text-xs text-orange-600 dark:text-orange-400 font-mono clay-pill px-2.5 py-1 rounded-full font-bold whitespace-nowrap shrink-0">
             Real Link Capture Active
           </span>
         </div>
@@ -169,7 +169,7 @@ export const DistractionBlocker: React.FC = () => {
                 href={site.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl clay-btn-light text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-amber-400 transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl clay-btn-light text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-amber-400 transition-all cursor-pointer shadow-sm active:scale-95 sm:hover:scale-105"
                 title={`Click real link to ${site.url} to test browser intercept`}
               >
                 <ArrowUpRight className="w-3.5 h-3.5 text-orange-500" />
@@ -185,7 +185,7 @@ export const DistractionBlocker: React.FC = () => {
               value={customTestUrl}
               onChange={e => setCustomTestUrl(e.target.value)}
               placeholder="e.g. https://instagram.com/p/example"
-              className="clay-inset rounded-xl px-4 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 flex-1"
+              className="clay-inset rounded-xl px-4 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 flex-1 min-w-0"
             />
             <button
               type="button"
@@ -208,26 +208,26 @@ export const DistractionBlocker: React.FC = () => {
       </div>
 
       {/* Browser-Wide Protection Suite (Chrome Extension, Userscript, Hosts) */}
-      <div className="clay-card rounded-3xl p-6 border border-slate-200/80 dark:border-white/5">
+      <div className="clay-card rounded-3xl p-4 sm:p-6 border border-slate-200/80 dark:border-white/5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-2">
-            <Laptop className="w-5 h-5 text-indigo-500" />
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+          <div className="flex items-start gap-2.5 sm:gap-3 min-w-0">
+            <Laptop className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
                 Browser-Wide System Protection Suite
               </h2>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 leading-relaxed">
                 Block social media when opening new tabs or typing URLs in Chrome, Edge, Brave, or Firefox.
               </p>
             </div>
           </div>
 
           {/* Suite Tabs */}
-          <div className="flex items-center gap-1.5 clay-inset p-1 rounded-2xl self-start sm:self-auto">
+          <div className="flex items-center gap-1 clay-inset p-1 rounded-2xl self-start sm:self-auto flex-wrap">
             <button
               type="button"
               onClick={() => setActiveSuiteTab('extension')}
-              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-2.5 sm:px-3 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 activeSuiteTab === 'extension'
                   ? 'clay-btn-primary text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -238,7 +238,7 @@ export const DistractionBlocker: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveSuiteTab('userscript')}
-              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-2.5 sm:px-3 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 activeSuiteTab === 'userscript'
                   ? 'clay-btn-primary text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -249,7 +249,7 @@ export const DistractionBlocker: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveSuiteTab('hosts')}
-              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`px-2.5 sm:px-3 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 activeSuiteTab === 'hosts'
                   ? 'clay-btn-primary text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -418,10 +418,10 @@ export const DistractionBlocker: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Blacklist Domains Management */}
-        <div className="lg:col-span-2 clay-card rounded-3xl p-6 border border-slate-200/80 dark:border-white/5">
+        <div className="lg:col-span-2 clay-card rounded-3xl p-3.5 sm:p-6 border border-slate-200/80 dark:border-white/5">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Blocked Distraction Domains</h2>
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Blocked Distraction Domains</h2>
               <p className="text-xs text-slate-600 dark:text-slate-400">
                 Monitored applications and doom-scrolling sinks.
               </p>
@@ -435,12 +435,12 @@ export const DistractionBlocker: React.FC = () => {
               value={newDomain}
               onChange={e => setNewDomain(e.target.value)}
               placeholder="Add website (e.g., twitch.tv, discord.com)"
-              className="flex-1 clay-inset rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="flex-1 min-w-0 clay-inset rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
             <select
               value={newCategory}
               onChange={e => setNewCategory(e.target.value as any)}
-              className="clay-inset rounded-xl px-3 py-2.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none"
+              className="clay-inset rounded-xl px-3 py-2.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none shrink-0"
             >
               <option value="social">Social Media</option>
               <option value="video">Video Streaming</option>
@@ -449,7 +449,7 @@ export const DistractionBlocker: React.FC = () => {
             </select>
             <button
               type="submit"
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl clay-btn-primary text-white text-xs sm:text-sm font-bold cursor-pointer"
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl clay-btn-primary text-white text-xs sm:text-sm font-bold cursor-pointer shrink-0"
             >
               <Plus className="w-4 h-4" />
               <span>Add Filter</span>
@@ -461,32 +461,32 @@ export const DistractionBlocker: React.FC = () => {
             {blockedDomains.map(b => (
               <div
                 key={b.id}
-                className="flex items-center justify-between p-3.5 rounded-2xl clay-card-subtle transition-all"
+                className="flex items-center justify-between p-2.5 sm:p-3.5 rounded-2xl clay-card-subtle transition-all gap-2 min-w-0 overflow-hidden"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl clay-pill flex items-center justify-center text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl clay-pill flex items-center justify-center text-[10px] sm:text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase shrink-0">
                     {b.domain.slice(0, 2)}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-slate-900 dark:text-white">{b.name}</span>
-                      <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">({b.domain})</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap min-w-0">
+                      <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">{b.name}</span>
+                      <span className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-mono truncate">({b.domain})</span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      <span className="capitalize">{b.category}</span>
-                      <span>•</span>
-                      <span className="text-orange-600 dark:text-orange-400 font-semibold">{b.attemptsToday} intercepted</span>
-                      <span>•</span>
-                      <span className="text-indigo-600 dark:text-cyan-400 font-semibold">~{b.minutesSaved}m saved</span>
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex-wrap">
+                      <span className="capitalize shrink-0">{b.category}</span>
+                      <span className="shrink-0">•</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-semibold shrink-0">{b.attemptsToday} intercepted</span>
+                      <span className="shrink-0 hidden min-[360px]:inline">•</span>
+                      <span className="text-indigo-600 dark:text-cyan-400 font-semibold shrink-0">~{b.minutesSaved}m saved</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 ml-1">
                   <button
                     type="button"
                     onClick={() => triggerInterception(b.domain)}
-                    className="p-2 rounded-xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-orange-600 cursor-pointer"
+                    className="p-1.5 sm:p-2 rounded-xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-orange-600 cursor-pointer shrink-0"
                     title="Simulate interception"
                   >
                     <Play className="w-3.5 h-3.5" />
@@ -494,7 +494,7 @@ export const DistractionBlocker: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => removeBlockedDomain(b.id)}
-                    className="p-2 rounded-xl hover:bg-red-500/10 text-slate-400 hover:text-red-500 cursor-pointer"
+                    className="p-1.5 sm:p-2 rounded-xl hover:bg-red-500/10 text-slate-400 hover:text-red-500 cursor-pointer shrink-0"
                     title="Remove filter"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -506,7 +506,7 @@ export const DistractionBlocker: React.FC = () => {
         </div>
 
         {/* Right Col: Distraction Analytics & Culprits */}
-        <div className="clay-card rounded-3xl p-6 flex flex-col justify-between border border-slate-200/80 dark:border-white/5">
+        <div className="clay-card rounded-3xl p-3.5 sm:p-6 flex flex-col justify-between border border-slate-200/80 dark:border-white/5">
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">Top Culprits Breakdown</h2>
