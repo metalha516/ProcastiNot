@@ -6,6 +6,7 @@ interface AuthContextType extends AuthState {
   login: (email: string, pass: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   loginWithSSO: (institution: string, email: string) => Promise<void>;
+  loginDemoUser: () => Promise<void>;
   logout: () => void;
   updateUser: (updates: Partial<UserProfile>) => void;
 }
@@ -28,11 +29,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // fallback
       }
     }
-    // Default demo authenticated state with rich mock user
+    // Default: unauthenticated. Only free Pomodoro Timer is accessible until logged in.
     return {
-      isAuthenticated: true,
-      user: initialUser,
-      token: 'jwt_mock_token_stanford_alex_chen',
+      isAuthenticated: false,
+      user: null,
+      token: null,
       isLoading: false,
     };
   });
@@ -94,7 +95,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
+  const loginDemoUser = async () => {
+    setAuthState(prev => ({ ...prev, isLoading: true }));
+    await new Promise(r => setTimeout(r, 400));
+    setAuthState({
+      isAuthenticated: true,
+      user: initialUser,
+      token: 'jwt_mock_token_stanford_alex_chen',
+      isLoading: false,
+    });
+  };
+
   const logout = () => {
+    localStorage.removeItem('procastinot_user');
+    localStorage.removeItem('procastinot_token');
     setAuthState({
       isAuthenticated: false,
       user: null,
@@ -120,6 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         loginWithGoogle,
         loginWithSSO,
+        loginDemoUser,
         logout,
         updateUser,
       }}

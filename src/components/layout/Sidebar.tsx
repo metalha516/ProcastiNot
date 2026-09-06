@@ -13,9 +13,12 @@ import {
   ChevronRight,
   Flame,
   ShieldAlert,
+  Lock,
+  Sparkles,
 } from 'lucide-react';
 import { useTimer } from '../../context/TimerContext';
 import { useTask } from '../../context/TaskContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -40,16 +43,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const { isRunning } = useTimer();
   const { circadianStatus } = useTask();
+  const { isAuthenticated } = useAuth();
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'timer', label: 'Focus Timer', icon: Clock, badge: isRunning ? 'LIVE' : undefined },
-    { id: 'planner-tasks', label: 'Planner & Tasks', icon: CheckSquare },
-    { id: 'habits-matrix', label: 'Habits & Matrix', icon: Grid2X2 },
-    { id: 'blocker', label: 'Distraction Shield', icon: ShieldAlert },
-    { id: 'study-rooms', label: 'Study Rooms', icon: Users },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'rewards', label: 'Reward Shop', icon: ShoppingBag },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, requiresAuth: true },
+    { id: 'timer', label: 'Focus Timer', icon: Clock, badge: isRunning ? 'LIVE' : undefined, requiresAuth: false },
+    { id: 'planner-tasks', label: 'Planner & Tasks', icon: CheckSquare, requiresAuth: true },
+    { id: 'habits-matrix', label: 'Habits & Matrix', icon: Grid2X2, requiresAuth: true },
+    { id: 'blocker', label: 'Distraction Shield', icon: ShieldAlert, requiresAuth: true },
+    { id: 'study-rooms', label: 'Study Rooms', icon: Users, requiresAuth: true },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, requiresAuth: true },
+    { id: 'rewards', label: 'Reward Shop', icon: ShoppingBag, requiresAuth: true },
   ];
 
   const sidebarContent = (
@@ -86,6 +90,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+            const isLocked = !isAuthenticated && item.requiresAuth;
+
             return (
               <button
                 key={item.id}
@@ -108,6 +114,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {!isCollapsed && item.badge && (
                   <span className="font-telemetry-sm text-[10px] px-2 py-0.5 rounded-full bg-emerald-500 text-white font-extrabold animate-pulse">
                     {item.badge}
+                  </span>
+                )}
+                {!isCollapsed && isLocked && (
+                  <span className="font-telemetry-sm text-[9px] px-1.5 py-0.5 rounded-md bg-slate-200/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1 shrink-0">
+                    <Lock className="w-2.5 h-2.5" />
+                    <span>LOCK</span>
+                  </span>
+                )}
+                {!isCollapsed && !isAuthenticated && !item.requiresAuth && !item.badge && (
+                  <span className="font-telemetry-sm text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold shrink-0">
+                    FREE
                   </span>
                 )}
               </button>
@@ -172,6 +189,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
         </div>
+
+        {/* Unauthenticated Quick Sign In Banner */}
+        {!isCollapsed && !isAuthenticated && (
+          <button
+            type="button"
+            onClick={() => {
+              onSelectTab('dashboard');
+              onCloseMobile();
+            }}
+            className="w-full py-2.5 px-3 rounded-2xl clay-btn-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md mt-1 hover:scale-105 transition-all"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+            <span>Sign In to Unlock All</span>
+          </button>
+        )}
       </div>
     </div>
   );

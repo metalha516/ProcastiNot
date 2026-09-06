@@ -8,7 +8,7 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
-  const { login, loginWithGoogle, loginWithSSO, isLoading } = useAuth();
+  const { login, loginWithGoogle, loginWithSSO, loginDemoUser, isLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'login' | 'sso'>('login');
   const [email, setEmail] = useState<string>('alex.chen@stanford.edu');
@@ -16,6 +16,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [institution, setInstitution] = useState<string>('Stanford University');
 
   if (!isOpen) return null;
+
+  const handleDemoLogin = async () => {
+    await loginDemoUser();
+    onClose();
+  };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,6 +88,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             Institutional SSO
           </button>
         </div>
+
+        {/* Instant 1-Click Demo Sign In */}
+        <button
+          type="button"
+          onClick={handleDemoLogin}
+          disabled={isLoading}
+          className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl clay-btn-primary text-white font-headline-sm font-extrabold text-xs sm:text-sm cursor-pointer shadow-md mb-3 hover:scale-105 transition-all disabled:opacity-50"
+        >
+          <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+          <span>{isLoading ? 'Authenticating...' : '1-Click Demo Sign-In (Alex Chen)'}</span>
+        </button>
 
         {/* Quick Google Sign In */}
         <button

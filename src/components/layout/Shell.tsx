@@ -13,11 +13,19 @@ import { LeaderboardArena } from '../gamification/LeaderboardArena';
 import { RewardShop } from '../gamification/RewardShop';
 import { AuthModal } from '../auth/AuthModal';
 import { useBrowserShield } from '../../hooks/useBrowserShield';
+import { useAuth } from '../../context/AuthContext';
+import { AuthFeatureGate } from '../auth/AuthFeatureGate';
 
 export const Shell: React.FC = () => {
   useBrowserShield();
+  const { isAuthenticated } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    const savedUser = localStorage.getItem('procastinot_user');
+    const token = localStorage.getItem('procastinot_token');
+    return (savedUser && token) ? 'dashboard' : 'timer';
+  });
+
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
@@ -45,10 +53,31 @@ export const Shell: React.FC = () => {
     setIsDark(prev => !prev);
   };
 
+  const handleSelectTab = (tab: string) => {
+    const isPublic = tab === 'timer' || tab === 'focus-timer';
+    if (!isAuthenticated && !isPublic) {
+      setActiveTab(tab);
+      setIsAuthModalOpen(true);
+      return;
+    }
+    setActiveTab(tab);
+  };
+
   const renderActiveView = () => {
+    const isPublic = activeTab === 'timer' || activeTab === 'focus-timer';
+    if (!isAuthenticated && !isPublic) {
+      return (
+        <AuthFeatureGate
+          featureId={activeTab}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
+          onGoToTimer={() => setActiveTab('timer')}
+        />
+      );
+    }
+
     switch (activeTab) {
       case 'dashboard':
-        return <OverviewDashboard onNavigate={setActiveTab} />;
+        return <OverviewDashboard onNavigate={handleSelectTab} />;
       case 'timer':
       case 'focus-timer':
         return <PomodoroTimer />;
@@ -73,7 +102,7 @@ export const Shell: React.FC = () => {
       case 'rewards':
         return <RewardShop />;
       default:
-        return <OverviewDashboard onNavigate={setActiveTab} />;
+        return <OverviewDashboard onNavigate={handleSelectTab} />;
     }
   };
 
@@ -83,7 +112,7 @@ export const Shell: React.FC = () => {
         {/* Claymorphic Tactile Sidebar */}
         <Sidebar
           activeTab={activeTab}
-          onSelectTab={setActiveTab}
+          onSelectTab={handleSelectTab}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={() => setIsSidebarCollapsed(prev => !prev)}
           isMobileOpen={isMobileSidebarOpen}
@@ -98,7 +127,7 @@ export const Shell: React.FC = () => {
           <Topbar
             onToggleSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
             onOpenAuth={() => setIsAuthModalOpen(true)}
-            onNavigate={setActiveTab}
+            onNavigate={handleSelectTab}
             isDark={isDark}
             onToggleTheme={toggleTheme}
           />
