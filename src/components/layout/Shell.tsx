@@ -49,6 +49,13 @@ export const Shell: React.FC = () => {
     }
   }, [isDark]);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      // If user logs in while on timer, transition to dashboard
+      setActiveTab(prev => (prev === 'timer' ? 'dashboard' : prev));
+    }
+  }, [isAuthenticated]);
+
   const toggleTheme = () => {
     setIsDark(prev => !prev);
   };
