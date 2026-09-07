@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
 import {
   X,
-  Lock,
-  Mail,
   GraduationCap,
-  ArrowRight,
   Sparkles,
   User,
   Building2,
-  CheckCircle2,
-  Sun,
-  Moon,
-  Compass,
   ArrowLeft,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
