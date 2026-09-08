@@ -28,7 +28,7 @@ interface TaskContextType {
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-export const sortTasks = (taskList: Task[], window: 'peak' | 'moderate' | 'trough' = 'peak'): Task[] => {
+export const sortTasks = (taskList: Task[], _circadianWindow: 'peak' | 'moderate' | 'trough' = 'peak'): Task[] => {
   return [...taskList].sort((a, b) => {
     // 1. Completed tasks always sink to the bottom
     if (a.completed !== b.completed) {

@@ -9,7 +9,6 @@ import {
   Sparkles,
   ChevronDown,
   Activity,
-  Zap,
 } from 'lucide-react';
 import { useTimer } from '../../context/TimerContext';
 import { useTask } from '../../context/TaskContext';

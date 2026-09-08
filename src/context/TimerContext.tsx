@@ -61,6 +61,7 @@ export const TimerProvider: React.FC<{
 
   // Cross-tab synchronization via BroadcastChannel
   const broadcastRef = useRef<BroadcastChannel | null>(null);
+  const targetEndTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     try {
@@ -71,6 +72,11 @@ export const TimerProvider: React.FC<{
           setTimeRemaining(data.timeRemaining);
           setIsRunning(data.isRunning);
           setMode(data.mode);
+          if (data.isRunning) {
+            targetEndTimeRef.current = Date.now() + data.timeRemaining * 1000;
+          } else {
+            targetEndTimeRef.current = null;
+          }
         }
       };
     } catch {
@@ -97,14 +103,22 @@ export const TimerProvider: React.FC<{
     }
   }, [timeRemaining, isRunning, mode]);
 
+  // Volume slider refs for start() invocation
+  const gammaVolRef = useRef(gammaAudio.gammaVolume);
+  const ambientVolRef = useRef(gammaAudio.ambientVolume);
+  useEffect(() => {
+    gammaVolRef.current = gammaAudio.gammaVolume;
+    ambientVolRef.current = gammaAudio.ambientVolume;
+  }, [gammaAudio.gammaVolume, gammaAudio.ambientVolume]);
+
   // Audio synchronization with timer state
   useEffect(() => {
     if (gammaAudio.enabled) {
       gammaEngine.start(
         gammaAudio.mode,
         gammaAudio.ambientType,
-        gammaAudio.gammaVolume,
-        gammaAudio.ambientVolume
+        gammaVolRef.current,
+        ambientVolRef.current
       );
     } else {
       gammaEngine.stop();
@@ -121,6 +135,7 @@ export const TimerProvider: React.FC<{
   }, [gammaAudio.ambientVolume]);
 
   const completeCurrentSession = useCallback(() => {
+    targetEndTimeRef.current = null;
     setIsRunning(false);
     gammaEngine.stop();
     gammaEngine.playChime('complete');
@@ -175,35 +190,58 @@ export const TimerProvider: React.FC<{
     }
   }, [mode, totalDuration, selectedTaskTitle, onSessionComplete, activePreset]);
 
-  // Main countdown tick interval
+  const timeRemainingRef = useRef(timeRemaining);
   useEffect(() => {
-    let interval: any = null;
-    if (isRunning && timeRemaining > 0) {
-      interval = setInterval(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            completeCurrentSession();
-            return 0;
-          }
-          const next = prev - 1;
-          broadcastRef.current?.postMessage({
-            type: 'SYNC',
-            timeRemaining: next,
-            isRunning: true,
-            mode,
-          });
-          return next;
-        });
-      }, 1000);
+    timeRemainingRef.current = timeRemaining;
+  }, [timeRemaining]);
+
+  // Main countdown tick interval with drift correction & visibility recovery
+  useEffect(() => {
+    if (!isRunning) return;
+
+    if (!targetEndTimeRef.current) {
+      targetEndTimeRef.current = Date.now() + timeRemainingRef.current * 1000;
     }
 
-    return () => {
-      if (interval) clearInterval(interval);
+    const checkAndUpdate = () => {
+      if (!targetEndTimeRef.current) return;
+      const msLeft = targetEndTimeRef.current - Date.now();
+      const nextSeconds = Math.max(0, Math.ceil(msLeft / 1000));
+
+      setTimeRemaining(nextSeconds);
+      broadcastRef.current?.postMessage({
+        type: 'SYNC',
+        timeRemaining: nextSeconds,
+        isRunning: true,
+        mode,
+      });
+
+      if (nextSeconds <= 0) {
+        targetEndTimeRef.current = null;
+        completeCurrentSession();
+      }
     };
-  }, [isRunning, timeRemaining, mode, completeCurrentSession]);
+
+    const interval = setInterval(checkAndUpdate, 1000);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && isRunning) {
+        checkAndUpdate();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isRunning, mode, completeCurrentSession]);
 
   const startTimer = () => {
     gammaEngine.playChime('start');
+    const target = Date.now() + timeRemaining * 1000;
+    targetEndTimeRef.current = target;
     setIsRunning(true);
     broadcastRef.current?.postMessage({
       type: 'SYNC',
@@ -214,6 +252,12 @@ export const TimerProvider: React.FC<{
   };
 
   const pauseTimer = () => {
+    if (targetEndTimeRef.current) {
+      const msLeft = targetEndTimeRef.current - Date.now();
+      const accurateRemaining = Math.max(0, Math.ceil(msLeft / 1000));
+      setTimeRemaining(accurateRemaining);
+    }
+    targetEndTimeRef.current = null;
     setIsRunning(false);
     broadcastRef.current?.postMessage({
       type: 'SYNC',
@@ -224,6 +268,7 @@ export const TimerProvider: React.FC<{
   };
 
   const resetTimer = () => {
+    targetEndTimeRef.current = null;
     setIsRunning(false);
     const duration = (mode === 'focus' ? activePreset.focusMinutes : activePreset.breakMinutes) * 60;
     setTimeRemaining(duration);
@@ -237,6 +282,7 @@ export const TimerProvider: React.FC<{
   };
 
   const skipSession = () => {
+    targetEndTimeRef.current = null;
     setIsRunning(false);
     if (mode === 'focus') {
       setMode('short_break');
@@ -252,6 +298,7 @@ export const TimerProvider: React.FC<{
   };
 
   const switchMode = (newMode: TimerMode) => {
+    targetEndTimeRef.current = null;
     setIsRunning(false);
     setMode(newMode);
     let mins = activePreset.focusMinutes;
@@ -263,6 +310,7 @@ export const TimerProvider: React.FC<{
   };
 
   const selectPreset = (preset: TimerPreset) => {
+    targetEndTimeRef.current = null;
     setActivePreset(preset);
     setIsRunning(false);
     const secs = (mode === 'focus' ? preset.focusMinutes : preset.breakMinutes) * 60;

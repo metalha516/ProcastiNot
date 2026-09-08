@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Flame,
   Shield,
@@ -30,16 +30,15 @@ export const StreakHeatmap: React.FC = () => {
   const { tasks, toggleTaskComplete, addTask } = useTask();
 
   const todayStr = formatLocalDate(new Date());
-  const [selectedDay, setSelectedDay] = useState<HeatmapDay>(() => {
-    return heatmapDays.find(d => d.date === todayStr) || heatmapDays[heatmapDays.length - 1] || { date: todayStr, count: 0, level: 0 };
-  });
-
-  useEffect(() => {
-    const match = heatmapDays.find(d => d.date === selectedDay.date);
-    if (match) {
-      setSelectedDay(match);
-    }
-  }, [heatmapDays, selectedDay.date]);
+  const [selectedDate, setSelectedDate] = useState<string>(todayStr);
+  const selectedDay: HeatmapDay = useMemo(() => {
+    return (
+      heatmapDays.find(d => d.date === selectedDate) ||
+      heatmapDays.find(d => d.date === todayStr) ||
+      heatmapDays[heatmapDays.length - 1] ||
+      { date: todayStr, count: 0, level: 0 }
+    );
+  }, [heatmapDays, selectedDate, todayStr]);
 
   // Quick task addition in Eisenhower Matrix
   const [newQuadrantTask, setNewQuadrantTask] = useState<{ [key: string]: string }>({});
@@ -248,8 +247,8 @@ export const StreakHeatmap: React.FC = () => {
                           <button
                             key={rowIdx}
                             type="button"
-                            onClick={() => setSelectedDay(day)}
-                            onTouchStart={() => setSelectedDay(day)}
+                            onClick={() => setSelectedDate(day.date)}
+                            onTouchStart={() => setSelectedDate(day.date)}
                             title={`${day.date}: ${day.count} mins focus`}
                             className={`w-3.5 h-3.5 rounded-xs border transition-all cursor-pointer ${
                               isSelected ? 'ring-2 ring-orange-500 scale-125 z-10' : 'hover:scale-125'

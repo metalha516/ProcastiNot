@@ -341,6 +341,11 @@ class GammaAudioEngine {
   public stop() {
     this.stopAudioNodes();
     this.isRunning = false;
+    if (this.ctx && this.ctx.state === 'running') {
+      try {
+        this.ctx.suspend();
+      } catch {}
+    }
   }
 
   public getIsPlaying(): boolean {
@@ -351,6 +356,12 @@ class GammaAudioEngine {
   public playChime(type: 'start' | 'complete' | 'mindfulness') {
     this.initContext();
     if (!this.ctx || !this.masterGain) return;
+
+    if (this.ctx.state === 'suspended') {
+      try {
+        this.ctx.resume();
+      } catch {}
+    }
 
     const now = this.ctx.currentTime;
 

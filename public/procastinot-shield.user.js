@@ -20,11 +20,11 @@
 (function () {
   'use strict';
   const hostname = window.location.hostname.replace(/^(www|m|mobile)\./, '');
-  const appTarget = 'http://localhost:5173/?blocked=' + encodeURIComponent(hostname);
+  const appTarget = 'https://procastinot-nine.vercel.app/?blocked=' + encodeURIComponent(hostname);
 
   try {
     window.stop();
-  } catch (e) {}
+  } catch {}
 
   window.location.replace(appTarget);
 })();

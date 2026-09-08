@@ -13,7 +13,7 @@ import {
 import { useTimer } from '../../context/TimerContext';
 
 export const GammaWaveControls: React.FC = () => {
-  const { gammaAudio, updateGammaSettings, toggleGammaAudio, isRunning } = useTimer();
+  const { gammaAudio, updateGammaSettings, toggleGammaAudio } = useTimer();
 
   return (
     <div className="clay-card rounded-3xl p-6 border border-white/80 dark:border-white/5 transition-all">
@@ -186,8 +186,8 @@ export const GammaWaveControls: React.FC = () => {
               key={i}
               className="w-1.5 bg-gradient-to-t from-orange-500 to-emerald-400 rounded-full animate-pulse"
               style={{
-                height: `${Math.max(6, Math.sin(i + Date.now() / 200) * 18 + 12)}px`,
-                animationDelay: `${i * 0.1}s`,
+                height: `${8 + ((i * 5) % 18)}px`,
+                animationDelay: `${(i * 0.08).toFixed(2)}s`,
               }}
             />
           ))}

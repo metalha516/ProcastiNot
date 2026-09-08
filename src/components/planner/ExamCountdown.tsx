@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Calendar,
-  Clock,
   Circle,
   RotateCw,
   Plus,
@@ -10,13 +9,13 @@ import { useTask } from '../../context/TaskContext';
 
 export const ExamCountdown: React.FC = () => {
   const { exams, updateExamCoverage, rebalanceRunway, addExam } = useTask();
-  const [currentTime, setCurrentTime] = useState<number>(Date.now());
+  const [currentTime, setCurrentTime] = useState<number>(() => Date.now());
   const [showAddExam, setShowAddExam] = useState<boolean>(false);
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [newCourseCode, setNewCourseCode] = useState<string>('');
   const [newExamDate, setNewExamDate] = useState<string>(
-    new Date(Date.now() + 86400000 * 5).toISOString().slice(0, 16)
+    () => new Date(Date.now() + 86400000 * 5).toISOString().slice(0, 16)
   );
   const [newTopics, setNewTopics] = useState<string>('Dynamic Programming, Graph Traversal, Greedy Proofs');
   const [newPriority, setNewPriority] = useState<'critical' | 'high' | 'normal'>('high');

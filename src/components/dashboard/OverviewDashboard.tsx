@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Timer,
   Sparkles,
-  Flame,
   CheckCircle2,
   Users,
   ArrowRight,

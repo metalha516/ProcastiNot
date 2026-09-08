@@ -8,7 +8,6 @@ import {
   LogOut,
   Send,
   Flame,
-  Sparkles,
 } from 'lucide-react';
 import { useGamification } from '../../context/GamificationContext';
 import { useTimer } from '../../context/TimerContext';

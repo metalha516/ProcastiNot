@@ -22,7 +22,9 @@ const DEFAULT_BLOCKED_SITES = [
 export const useBrowserShield = () => {
   const { blockedDomains, triggerInterception } = useGamification();
   const blockedDomainsRef = useRef(blockedDomains);
-  blockedDomainsRef.current = blockedDomains;
+  useEffect(() => {
+    blockedDomainsRef.current = blockedDomains;
+  }, [blockedDomains]);
 
   const isDomainBlocked = (targetUrlOrHost: string): string | null => {
     let hostname = targetUrlOrHost.toLowerCase().trim();

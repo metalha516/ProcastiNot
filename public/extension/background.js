@@ -10,7 +10,7 @@ const BLOCKED_DOMAINS = [
   'netflix.com'
 ];
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.url) {
     try {
       const url = new URL(changeInfo.url);
@@ -18,10 +18,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
       const matched = BLOCKED_DOMAINS.find(d => host === d || host.endsWith('.' + d));
       if (matched) {
-        const target = `http://localhost:5173/?blocked=${encodeURIComponent(matched)}`;
+        const target = `https://procastinot-nine.vercel.app/?blocked=${encodeURIComponent(matched)}`;
         chrome.tabs.update(tabId, { url: target });
       }
-    } catch (e) {
+    } catch {
       // Ignore invalid URLs
     }
   }

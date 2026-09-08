@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Trophy, Flame, BarChart2 } from 'lucide-react';
 import { useGamification } from '../../context/GamificationContext';
 import { useAuth } from '../../context/AuthContext';
@@ -11,16 +11,21 @@ export const LeaderboardArena: React.FC = () => {
 
   const cohortAverageWeekly = 26.4;
 
-  const todayStr = new Date().toISOString().split('T')[0];
-  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
-  const todayMinutes = sessionLogs
-    .filter(s => s.completed && s.mode === 'focus' && s.timestamp.startsWith(todayStr))
-    .reduce((acc, s) => acc + s.durationMinutes, 0);
-  const weeklyMinutes = sessionLogs
-    .filter(s => s.completed && s.mode === 'focus' && s.timestamp >= sevenDaysAgo)
-    .reduce((acc, s) => acc + s.durationMinutes, 0);
-  const userDailyHours = Math.round((todayMinutes / 60) * 10) / 10;
-  const userWeeklyHours = Math.round((weeklyMinutes / 60) * 10) / 10;
+  const [todayStr] = useState(() => new Date().toISOString().split('T')[0]);
+  const [sevenDaysAgo] = useState(() => new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0]);
+
+  const { userDailyHours, userWeeklyHours } = useMemo(() => {
+    const todayMinutes = sessionLogs
+      .filter(s => s.completed && s.mode === 'focus' && s.timestamp.startsWith(todayStr))
+      .reduce((acc, s) => acc + s.durationMinutes, 0);
+    const weeklyMinutes = sessionLogs
+      .filter(s => s.completed && s.mode === 'focus' && s.timestamp >= sevenDaysAgo)
+      .reduce((acc, s) => acc + s.durationMinutes, 0);
+    return {
+      userDailyHours: Math.round((todayMinutes / 60) * 10) / 10,
+      userWeeklyHours: Math.round((weeklyMinutes / 60) * 10) / 10,
+    };
+  }, [sessionLogs, todayStr, sevenDaysAgo]);
 
   const dynamicLeaderboard = leaderboard.map(entry => {
     if (entry.isCurrentUser) {
@@ -114,7 +119,6 @@ export const LeaderboardArena: React.FC = () => {
 
         <div className="space-y-2">
           {dynamicLeaderboard.map(entry => {
-            const isTop3 = entry.rank <= 3;
             return (
               <div
                 key={entry.id}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import {
   BlockedDomain,
@@ -15,7 +15,6 @@ import {
   initialRooms,
   initialLeaderboard,
   performanceDeltaHistory,
-  shopThemes,
   initialNotifications,
 } from '../data/mockData';
 import {
@@ -81,7 +80,7 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   const [rooms, setRooms] = useState<VirtualRoom[]>(initialRooms);
   const [activeRoomId, setActiveRoomId] = useState<string | null>('room_1');
-  const [leaderboard, setLeaderboard] = useState<PeerLeaderboardEntry[]>(initialLeaderboard);
+  const [leaderboard] = useState<PeerLeaderboardEntry[]>(initialLeaderboard);
   const [heatmapDays, setHeatmapDays] = useState<HeatmapDay[]>(() => getRealHeatmapGrid(dailyRecords));
   const [deltaHistory, setDeltaHistory] = useState<DailyPerformanceDelta[]>(performanceDeltaHistory);
   const [notifications, setNotifications] = useState<RoutineNotification[]>(initialNotifications);
@@ -90,9 +89,14 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [interceptionActive, setInterceptionActive] = useState<boolean>(false);
   const [interceptedDomain, setInterceptedDomain] = useState<string | null>(null);
 
-  // Keep in sync with user profile
+  // Keep in sync with user profile safely
+  const userRef = useRef(user);
   useEffect(() => {
-    if (user) {
+    userRef.current = user;
+  }, [user]);
+
+  useEffect(() => {
+    if (userRef.current) {
       updateUser({
         focusPoints,
         streak,
@@ -101,7 +105,7 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         unlockedThemes,
       });
     }
-  }, [focusPoints, streak, streakFreezes, activeTheme, unlockedThemes]);
+  }, [focusPoints, streak, streakFreezes, activeTheme, unlockedThemes, updateUser]);
 
   const awardPoints = (amount: number, reason: string) => {
     setFocusPoints(prev => prev + amount);

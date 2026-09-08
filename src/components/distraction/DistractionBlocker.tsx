@@ -5,10 +5,7 @@ import {
   Plus,
   Trash2,
   Play,
-  Flame,
-  Clock,
   ExternalLink,
-  Smartphone,
   PieChart,
   Activity,
   Download,
@@ -16,7 +13,6 @@ import {
   Check,
   Globe,
   Laptop,
-  Terminal,
   Sparkles,
   ArrowUpRight,
 } from 'lucide-react';
@@ -80,7 +76,7 @@ export const DistractionBlocker: React.FC = () => {
   'use strict';
   const domain = window.location.hostname.replace(/^(www|m)\\./, '');
   window.stop();
-  window.location.replace('http://localhost:5173/?blocked=' + encodeURIComponent(domain));
+  window.location.replace('${typeof window !== 'undefined' ? window.location.origin : 'https://procastinot-nine.vercel.app'}/?blocked=' + encodeURIComponent(domain));
 })();`;
 
   return (

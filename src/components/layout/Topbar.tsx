@@ -7,7 +7,6 @@ import {
   Volume2,
   LogOut,
   Sparkles,
-  ChevronDown,
   Sun,
   Moon,
 } from 'lucide-react';

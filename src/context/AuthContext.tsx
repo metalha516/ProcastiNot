@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { UserProfile, AuthState } from '../types';
 import { initialUser } from '../data/mockData';
 
@@ -167,7 +167,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const updateUser = (updates: Partial<UserProfile>) => {
+  const updateUser = useCallback((updates: Partial<UserProfile>) => {
     setAuthState(prev => {
       if (!prev.user) return prev;
       return {
@@ -175,7 +175,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user: { ...prev.user, ...updates },
       };
     });
-  };
+  }, []);
 
   return (
     <AuthContext.Provider

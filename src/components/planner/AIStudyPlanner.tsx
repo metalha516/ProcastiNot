@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import {
   Sparkles,
   Brain,
-  Calendar,
-  Clock,
   ArrowRight,
-  CheckCircle2,
   Sliders,
-  Send,
 } from 'lucide-react';
 import { useTask } from '../../context/TaskContext';
 
@@ -16,7 +12,7 @@ export const AIStudyPlanner: React.FC = () => {
 
   const [course, setCourse] = useState<string>('CS 161 Algorithms & Complexity');
   const [examDate, setExamDate] = useState<string>(
-    new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0]
+    () => new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0]
   );
   const [freeHours, setFreeHours] = useState<number>(3.5);
   const [syllabusNotes, setSyllabusNotes] = useState<string>(

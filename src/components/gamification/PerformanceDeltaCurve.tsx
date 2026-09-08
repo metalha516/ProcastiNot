@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TrendingUp, TrendingDown, Activity, Info, Sparkles, CheckCircle2, Shield } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, Info } from 'lucide-react';
 import { useGamification } from '../../context/GamificationContext';
 import { DailyPerformanceDelta } from '../../types';
 

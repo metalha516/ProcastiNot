@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, Wind, ArrowLeft, ExternalLink, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
+import { ShieldAlert, Wind, ArrowLeft, AlertTriangle, Sparkles } from 'lucide-react';
 import { useGamification } from '../../context/GamificationContext';
 
 export const SecondThoughtModal: React.FC = () => {
@@ -10,12 +10,17 @@ export const SecondThoughtModal: React.FC = () => {
   const [selectedReason, setSelectedReason] = useState<string>('habit');
   const [showOverride, setShowOverride] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!interceptionActive) {
+  const [prevActive, setPrevActive] = useState(interceptionActive);
+  if (interceptionActive !== prevActive) {
+    setPrevActive(interceptionActive);
+    if (interceptionActive) {
       setSecondsRemaining(10);
       setShowOverride(false);
-      return;
     }
+  }
+
+  useEffect(() => {
+    if (!interceptionActive) return;
 
     // Breathing phase cycles: 4s inhale, 3s hold, 3s exhale = 10s
     const timer = setInterval(() => {
