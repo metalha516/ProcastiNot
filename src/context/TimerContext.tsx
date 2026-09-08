@@ -56,28 +56,7 @@ export const TimerProvider: React.FC<{
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    return [
-      {
-        id: 'sess_1',
-        timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
-        durationMinutes: 25,
-        mode: 'focus',
-        taskTitle: 'CS161: Dynamic Programming',
-        interceptionsEncountered: 0,
-        pointsEarned: 50,
-        completed: true,
-      },
-      {
-        id: 'sess_2',
-        timestamp: new Date(Date.now() - 3600000 * 5).toISOString(),
-        durationMinutes: 50,
-        mode: 'focus',
-        taskTitle: 'MATH 104 Topology proofs',
-        interceptionsEncountered: 1,
-        pointsEarned: 100,
-        completed: true,
-      },
-    ];
+    return [];
   });
 
   // Cross-tab synchronization via BroadcastChannel

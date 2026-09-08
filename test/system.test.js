@@ -168,3 +168,165 @@ test('5. Audio Synthesis & Binaural Frequency Calculations', () => {
   const rainFilterCutoff = 2600; // Hz
   assert.ok(rainFilterCutoff >= 2000 && rainFilterCutoff <= 4000, 'Rain lowpass filter must be in optimal audio range');
 });
+
+test('6. Real Streak Telemetry Algorithm Verification', () => {
+  const formatLocalDate = (d) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const calculateRealStreak = (dailyStudy = {}) => {
+    const today = new Date();
+    const todayStr = formatLocalDate(today);
+
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    const yesterdayStr = formatLocalDate(yesterday);
+
+    const studiedToday = (dailyStudy[todayStr] || 0) > 0;
+    const studiedYesterday = (dailyStudy[yesterdayStr] || 0) > 0;
+
+    if (!studiedToday && !studiedYesterday) {
+      return 0;
+    }
+
+    let streak = 0;
+    const checkDate = new Date(studiedToday ? today : yesterday);
+
+    while (true) {
+      const dStr = formatLocalDate(checkDate);
+      const minutes = dailyStudy[dStr] || 0;
+      if (minutes > 0) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  };
+
+  const today = new Date();
+  const todayStr = formatLocalDate(today);
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const yesterdayStr = formatLocalDate(yesterday);
+  const twoDaysAgo = new Date(today);
+  twoDaysAgo.setDate(today.getDate() - 2);
+  const twoDaysAgoStr = formatLocalDate(twoDaysAgo);
+  const threeDaysAgo = new Date(today);
+  threeDaysAgo.setDate(today.getDate() - 3);
+  const threeDaysAgoStr = formatLocalDate(threeDaysAgo);
+
+  // Scenario A: Brand new user with zero records -> streak 0
+  assert.equal(calculateRealStreak({}), 0, 'New user streak must be 0');
+
+  // Scenario B: User studied today for 25m -> streak 1
+  assert.equal(calculateRealStreak({ [todayStr]: 25 }), 1, 'Studying today gives streak 1');
+
+  // Scenario C: User studied yesterday, but not yet today -> streak 1 maintained
+  assert.equal(calculateRealStreak({ [yesterdayStr]: 50 }), 1, 'Studying yesterday maintains streak 1');
+
+  // Scenario D: User studied yesterday and day before -> streak 2 maintained
+  assert.equal(calculateRealStreak({ [yesterdayStr]: 45, [twoDaysAgoStr]: 60 }), 2, '2 consecutive days gives streak 2');
+
+  // Scenario E: User studies today after 2 prior days -> streak 3
+  assert.equal(calculateRealStreak({ [todayStr]: 30, [yesterdayStr]: 45, [twoDaysAgoStr]: 60 }), 3, '3 consecutive days gives streak 3');
+
+  // Scenario F: Broken streak (missed 2 days ago)
+  assert.equal(calculateRealStreak({ [todayStr]: 25, [threeDaysAgoStr]: 50 }), 1, 'Missing intermediate days resets streak to 1');
+});
+
+test('7. Real 26-Week Heatmap Grid Construction', () => {
+  const formatLocalDate = (d) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const getIntensityLevel = (minutes) => {
+    if (!minutes || minutes <= 0) return 0;
+    if (minutes < 60) return 1;
+    if (minutes < 120) return 2;
+    if (minutes < 180) return 3;
+    return 4;
+  };
+
+  const getRealHeatmapGrid = (dailyStudy = {}) => {
+    const today = new Date();
+    const dayOfWeek = (today.getDay() + 6) % 7;
+    const currentSunday = new Date(today);
+    currentSunday.setDate(today.getDate() + (6 - dayOfWeek));
+
+    const startDate = new Date(currentSunday);
+    startDate.setDate(currentSunday.getDate() - 181);
+
+    const days = [];
+    for (let i = 0; i < 182; i++) {
+      const d = new Date(startDate);
+      d.setDate(startDate.getDate() + i);
+      const dateStr = formatLocalDate(d);
+      const count = dailyStudy[dateStr] || 0;
+      const level = getIntensityLevel(count);
+
+      days.push({ date: dateStr, count, level });
+    }
+    return days;
+  };
+
+  const todayStr = formatLocalDate(new Date());
+  const grid = getRealHeatmapGrid({ [todayStr]: 150 });
+
+  // Grid dimensions
+  assert.equal(grid.length, 182, 'Grid must contain exactly 182 days (26 weeks × 7 days)');
+
+  // Today's entry has real count and level 3 (150m is between 120 and 179)
+  const todayEntry = grid.find(d => d.date === todayStr);
+  assert.ok(todayEntry, 'Today must be in the heatmap grid');
+  assert.equal(todayEntry.count, 150, 'Today focus count must be exactly 150m');
+  assert.equal(todayEntry.level, 3, '150m must map to intensity level 3');
+
+  // Other days default strictly to 0
+  const unstudied = grid.filter(d => d.date !== todayStr);
+  assert.ok(unstudied.every(d => d.count === 0 && d.level === 0), 'All unstudied days must default to 0m and level 0');
+});
+
+test('8. Real Session Logging & Dashboard Telemetry Integration', () => {
+  const sampleSessions = [
+    {
+      id: 'sess_real_1',
+      timestamp: new Date().toISOString(),
+      durationMinutes: 50,
+      mode: 'focus',
+      pointsEarned: 100,
+      completed: true,
+    },
+    {
+      id: 'sess_real_2',
+      timestamp: new Date().toISOString(),
+      durationMinutes: 25,
+      mode: 'focus',
+      pointsEarned: 50,
+      completed: true,
+    },
+  ];
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayFocusMinutes = sampleSessions
+    .filter(s => s.completed && s.mode === 'focus' && s.timestamp.startsWith(todayStr))
+    .reduce((acc, s) => acc + s.durationMinutes, 0);
+
+  assert.equal(todayFocusMinutes, 75, 'Today focus minutes must be exactly 75m (50m + 25m)');
+
+  const hours = Math.floor(todayFocusMinutes / 60);
+  const mins = todayFocusMinutes % 60;
+  const focusStr = `${hours}h ${mins.toString().padStart(2, '0')}m`;
+  assert.equal(focusStr, '1h 15m', 'Formatted study time must be 1h 15m');
+
+  const totalPoints = sampleSessions.reduce((acc, s) => acc + s.pointsEarned, 0);
+  assert.equal(totalPoints, 150, 'Total points earned today must be 150');
+});

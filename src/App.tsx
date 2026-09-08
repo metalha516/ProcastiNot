@@ -7,12 +7,13 @@ import { Shell } from './components/layout/Shell';
 
 // AppContent wraps TimerProvider inside GamificationProvider so completion awards points
 const AppContent: React.FC = () => {
-  const { awardPoints } = useGamification();
+  const { awardPoints, recordFocusSession } = useGamification();
 
   return (
     <TimerProvider
       onSessionComplete={(session) => {
         awardPoints(session.pointsEarned, `Completed ${session.durationMinutes}m focus block!`);
+        recordFocusSession(session.durationMinutes);
       }}
     >
       <Shell />

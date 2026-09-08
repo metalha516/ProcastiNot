@@ -14,11 +14,17 @@ import {
   initialBlockedDomains,
   initialRooms,
   initialLeaderboard,
-  generateHeatmapData,
   performanceDeltaHistory,
   shopThemes,
   initialNotifications,
 } from '../data/mockData';
+import {
+  formatLocalDate,
+  getRealHeatmapGrid,
+  calculateRealStreak,
+  loadUserDailyRecords,
+  saveUserDailyRecords,
+} from '../utils/streakTelemetry';
 import { useAuth } from './AuthContext';
 import { gammaEngine } from '../audio/gammaEngine';
 
@@ -28,6 +34,8 @@ interface GamificationContextType {
   streakFreezes: number;
   activeTheme: string;
   unlockedThemes: string[];
+  recordFocusSession: (minutes: number, date?: string) => void;
+  clearStudyTelemetry: () => void;
   blockedDomains: BlockedDomain[];
   rooms: VirtualRoom[];
   activeRoomId: string | null;
@@ -56,8 +64,9 @@ const GamificationContext = createContext<GamificationContextType | undefined>(u
 export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, updateUser } = useAuth();
 
-  const [focusPoints, setFocusPoints] = useState<number>(user?.focusPoints ?? 1420);
-  const [streak, setStreak] = useState<number>(user?.streak ?? 18);
+  const [dailyRecords, setDailyRecords] = useState<Record<string, number>>(() => loadUserDailyRecords());
+  const [focusPoints, setFocusPoints] = useState<number>(user?.focusPoints ?? 0);
+  const [streak, setStreak] = useState<number>(() => calculateRealStreak(dailyRecords));
   const [streakFreezes, setStreakFreezes] = useState<number>(user?.streakFreezes ?? 2);
   const [activeTheme, setActiveTheme] = useState<string>(user?.activeTheme ?? 'google-stitch');
   const [unlockedThemes, setUnlockedThemes] = useState<string[]>(user?.unlockedThemes ?? ['google-stitch']);
@@ -73,7 +82,7 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [rooms, setRooms] = useState<VirtualRoom[]>(initialRooms);
   const [activeRoomId, setActiveRoomId] = useState<string | null>('room_1');
   const [leaderboard, setLeaderboard] = useState<PeerLeaderboardEntry[]>(initialLeaderboard);
-  const [heatmapDays] = useState<HeatmapDay[]>(generateHeatmapData());
+  const [heatmapDays, setHeatmapDays] = useState<HeatmapDay[]>(() => getRealHeatmapGrid(dailyRecords));
   const [deltaHistory, setDeltaHistory] = useState<DailyPerformanceDelta[]>(performanceDeltaHistory);
   const [notifications, setNotifications] = useState<RoutineNotification[]>(initialNotifications);
 
@@ -258,6 +267,30 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return true;
   };
 
+  const recordFocusSession = (minutes: number, date?: string) => {
+    const targetDate = date || formatLocalDate(new Date());
+    setDailyRecords(prev => {
+      const updated = {
+        ...prev,
+        [targetDate]: (prev[targetDate] || 0) + minutes,
+      };
+      saveUserDailyRecords(updated);
+      const newStreak = calculateRealStreak(updated);
+      setStreak(newStreak);
+      setHeatmapDays(getRealHeatmapGrid(updated));
+      return updated;
+    });
+  };
+
+  const clearStudyTelemetry = () => {
+    const empty: Record<string, number> = {};
+    saveUserDailyRecords(empty);
+    localStorage.removeItem('procastinot_sessions');
+    setDailyRecords(empty);
+    setStreak(0);
+    setHeatmapDays(getRealHeatmapGrid(empty));
+  };
+
   return (
     <GamificationContext.Provider
       value={{
@@ -266,6 +299,8 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         streakFreezes,
         activeTheme,
         unlockedThemes,
+        recordFocusSession,
+        clearStudyTelemetry,
         blockedDomains,
         rooms,
         activeRoomId,

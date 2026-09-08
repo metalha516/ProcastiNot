@@ -12,10 +12,12 @@ import {
 } from 'lucide-react';
 import { useGamification } from '../../context/GamificationContext';
 import { useTimer } from '../../context/TimerContext';
+import { useAuth } from '../../context/AuthContext';
 
 export const VirtualFocusRooms: React.FC = () => {
-  const { rooms, activeRoomId, joinRoom, leaveRoom } = useGamification();
+  const { rooms, activeRoomId, joinRoom, leaveRoom, streak } = useGamification();
   const { mode, timeRemaining } = useTimer();
+  const { user } = useAuth();
 
   const [activeChat, setActiveChat] = useState<{ sender: string; text: string; time: string }[]>([
     { sender: 'Sarah Lin', text: 'Finishing the DP recurrence proof, 12 mins left!', time: '13:42' },
@@ -28,9 +30,10 @@ export const VirtualFocusRooms: React.FC = () => {
   const handleSendChat = (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatMessage.trim()) return;
+    const myName = user?.name ? user.name.split(' ')[0] : 'You';
     setActiveChat(prev => [
       ...prev,
-      { sender: 'You (Alex)', text: chatMessage.trim(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
+      { sender: `You (${myName})`, text: chatMessage.trim(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
     ]);
     setChatMessage('');
   };
@@ -154,15 +157,19 @@ export const VirtualFocusRooms: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <img
-                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-                      alt="Alex Chen"
+                      src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"}
+                      alt={user?.name || "You"}
                       className="w-10 h-10 rounded-2xl object-cover ring-2 ring-orange-500"
                     />
                     <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
                   </div>
                   <div>
-                    <span className="font-headline-sm text-xs font-bold text-slate-900 dark:text-slate-100 block">Alex Chen (You)</span>
-                    <span className="font-telemetry-sm text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase">Stanford</span>
+                    <span className="font-headline-sm text-xs font-bold text-slate-900 dark:text-slate-100 block">
+                      {user?.name || 'Alex Chen'} (You)
+                    </span>
+                    <span className="font-telemetry-sm text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase">
+                      {user?.institution || 'Stanford'}
+                    </span>
                   </div>
                 </div>
                 <div className="p-1.5 rounded-xl clay-pill text-slate-400">
@@ -181,7 +188,7 @@ export const VirtualFocusRooms: React.FC = () => {
                   </span>
                   <span className="text-slate-500 flex items-center gap-1">
                     <Flame className="w-3 h-3 text-orange-500" />
-                    18d streak
+                    {streak}d streak
                   </span>
                 </div>
               </div>

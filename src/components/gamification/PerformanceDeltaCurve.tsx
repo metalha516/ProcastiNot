@@ -18,8 +18,9 @@ export const PerformanceDeltaCurve: React.FC = () => {
   const maxScore = 100;
 
   const points = deltaHistory.map((d, index) => {
-    const x = padding + (index / (deltaHistory.length - 1)) * (width - 2 * padding);
-    const y = height - padding - ((d.performanceScore - minScore) / (maxScore - minScore)) * (height - 2 * padding);
+    const x = padding + (index / Math.max(1, deltaHistory.length - 1)) * (width - 2 * padding);
+    const clampedScore = Math.max(minScore, Math.min(maxScore, d.performanceScore));
+    const y = height - padding - ((clampedScore - minScore) / (maxScore - minScore)) * (height - 2 * padding);
     return { x, y, data: d };
   });
 

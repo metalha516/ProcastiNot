@@ -1,12 +1,46 @@
 import React from 'react';
-import { Trophy, Medal, Award, Flame, Users, TrendingUp, BarChart2 } from 'lucide-react';
+import { Trophy, Flame, BarChart2 } from 'lucide-react';
 import { useGamification } from '../../context/GamificationContext';
+import { useAuth } from '../../context/AuthContext';
+import { useTimer } from '../../context/TimerContext';
 
 export const LeaderboardArena: React.FC = () => {
-  const { leaderboard } = useGamification();
+  const { leaderboard, streak, focusPoints } = useGamification();
+  const { user } = useAuth();
+  const { sessionLogs } = useTimer();
 
   const cohortAverageWeekly = 26.4;
-  const userEntry = leaderboard.find(l => l.isCurrentUser) || leaderboard[2];
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+  const todayMinutes = sessionLogs
+    .filter(s => s.completed && s.mode === 'focus' && s.timestamp.startsWith(todayStr))
+    .reduce((acc, s) => acc + s.durationMinutes, 0);
+  const weeklyMinutes = sessionLogs
+    .filter(s => s.completed && s.mode === 'focus' && s.timestamp >= sevenDaysAgo)
+    .reduce((acc, s) => acc + s.durationMinutes, 0);
+  const userDailyHours = Math.round((todayMinutes / 60) * 10) / 10;
+  const userWeeklyHours = Math.round((weeklyMinutes / 60) * 10) / 10;
+
+  const dynamicLeaderboard = leaderboard.map(entry => {
+    if (entry.isCurrentUser) {
+      return {
+        ...entry,
+        name: `${user?.name || 'You'} (You)`,
+        avatar: user?.avatar || entry.avatar,
+        institution: user?.institution || 'Stanford',
+        streak,
+        points: focusPoints,
+        weeklyHours: userWeeklyHours,
+        dailyHours: userDailyHours,
+      };
+    }
+    return entry;
+  });
+
+  const userEntry = dynamicLeaderboard.find(l => l.isCurrentUser) || dynamicLeaderboard[2];
+  const diffVsCohort = Math.round(((userWeeklyHours - cohortAverageWeekly) / (cohortAverageWeekly || 1)) * 100);
+  const diffStr = diffVsCohort >= 0 ? `+${diffVsCohort}% above cohort average` : `${diffVsCohort}% vs cohort average`;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -27,7 +61,7 @@ export const LeaderboardArena: React.FC = () => {
 
           <div className="px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-300 text-xs font-bold self-start sm:self-auto flex items-center gap-2">
             <Trophy className="w-4 h-4" />
-            <span>Rank #{userEntry.rank} in Stanford League</span>
+            <span>Rank #{userEntry.rank} in {user?.institution || 'Collegiate'} League</span>
           </div>
         </div>
       </div>
@@ -40,7 +74,7 @@ export const LeaderboardArena: React.FC = () => {
             <h2 className="text-sm font-bold text-slate-800 dark:text-white">Weekly Focus Output vs. Group Benchmark</h2>
           </div>
           <span className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-semibold">
-            +17.4% above cohort average
+            {diffStr}
           </span>
         </div>
 
@@ -48,13 +82,13 @@ export const LeaderboardArena: React.FC = () => {
         <div className="space-y-3 pt-2">
           <div>
             <div className="flex justify-between text-xs mb-1">
-              <span className="font-semibold text-slate-800 dark:text-white">You (Alex Chen)</span>
+              <span className="font-semibold text-slate-800 dark:text-white">{userEntry.name}</span>
               <span className="font-mono text-violet-600 dark:text-violet-400 font-bold">{userEntry.weeklyHours}h / 40h target</span>
             </div>
             <div className="h-3 w-full bg-slate-100 dark:bg-[#121316] rounded-full overflow-hidden border border-slate-200/60 dark:border-white/5">
               <div
                 className="h-full bg-gradient-to-r from-violet-600 to-cyan-400 rounded-full transition-all duration-700"
-                style={{ width: `${(userEntry.weeklyHours / 40) * 100}%` }}
+                style={{ width: `${Math.min(100, (userEntry.weeklyHours / 40) * 100)}%` }}
               />
             </div>
           </div>
@@ -79,7 +113,7 @@ export const LeaderboardArena: React.FC = () => {
         <h2 className="text-base font-bold text-slate-800 dark:text-white mb-4">Live Peer Focus Rankings</h2>
 
         <div className="space-y-2">
-          {leaderboard.map(entry => {
+          {dynamicLeaderboard.map(entry => {
             const isTop3 = entry.rank <= 3;
             return (
               <div

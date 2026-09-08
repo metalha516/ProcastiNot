@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Flame,
   Shield,
@@ -15,6 +15,7 @@ import {
 import { useGamification } from '../../context/GamificationContext';
 import { useTask } from '../../context/TaskContext';
 import { HeatmapDay } from '../../types';
+import { formatLocalDate } from '../../utils/streakTelemetry';
 
 interface HabitItem {
   id: string;
@@ -25,23 +26,40 @@ interface HabitItem {
 }
 
 export const StreakHeatmap: React.FC = () => {
-  const { heatmapDays, streak, streakFreezes, useStreakFreeze } = useGamification();
+  const { heatmapDays, streak, streakFreezes, useStreakFreeze, recordFocusSession } = useGamification();
   const { tasks, toggleTaskComplete, addTask } = useTask();
-  const [selectedDay, setSelectedDay] = useState<HeatmapDay>(
-    heatmapDays[heatmapDays.length - 1] || { date: new Date().toISOString().split('T')[0], count: 180, level: 3 }
-  );
+
+  const todayStr = formatLocalDate(new Date());
+  const [selectedDay, setSelectedDay] = useState<HeatmapDay>(() => {
+    return heatmapDays.find(d => d.date === todayStr) || heatmapDays[heatmapDays.length - 1] || { date: todayStr, count: 0, level: 0 };
+  });
+
+  useEffect(() => {
+    const match = heatmapDays.find(d => d.date === selectedDay.date);
+    if (match) {
+      setSelectedDay(match);
+    }
+  }, [heatmapDays, selectedDay.date]);
 
   // Quick task addition in Eisenhower Matrix
   const [newQuadrantTask, setNewQuadrantTask] = useState<{ [key: string]: string }>({});
   const [activeInputQ, setActiveInputQ] = useState<string | null>(null);
 
-  // Mock initial habit list for the Claymorphic Habit Matrix
-  const [habits, setHabits] = useState<HabitItem[]>([
-    { id: 'h1', name: '50m Deep Algorithmic Focus', category: 'Cognitive', streak: 14, daysCompleted: [true, true, true, true, true, true, false] },
-    { id: 'h2', name: '40Hz Binaural Entrainment', category: 'Focus', streak: 9, daysCompleted: [true, true, true, true, false, true, true] },
-    { id: 'h3', name: 'Review Spaced Repetition Cards', category: 'Study', streak: 21, daysCompleted: [true, true, true, true, true, true, true] },
-    { id: 'h4', name: 'Clean Code & Git Commits', category: 'Dev', streak: 5, daysCompleted: [true, false, true, true, true, false, false] },
-  ]);
+  // Clean initial habit list for the Claymorphic Habit Matrix (persisted in localStorage)
+  const [habits, setHabits] = useState<HabitItem[]>(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = localStorage.getItem('procastinot_habits');
+      if (saved) {
+        try { return JSON.parse(saved); } catch {}
+      }
+    }
+    return [
+      { id: 'h1', name: '50m Deep Algorithmic Focus', category: 'Cognitive', streak: 0, daysCompleted: [false, false, false, false, false, false, false] },
+      { id: 'h2', name: '40Hz Binaural Entrainment', category: 'Focus', streak: 0, daysCompleted: [false, false, false, false, false, false, false] },
+      { id: 'h3', name: 'Review Spaced Repetition Cards', category: 'Study', streak: 0, daysCompleted: [false, false, false, false, false, false, false] },
+      { id: 'h4', name: 'Clean Code & Git Commits', category: 'Dev', streak: 0, daysCompleted: [false, false, false, false, false, false, false] },
+    ];
+  });
 
   const [newHabitName, setNewHabitName] = useState<string>('');
   const [showAddHabit, setShowAddHabit] = useState<boolean>(false);
@@ -91,26 +109,36 @@ export const StreakHeatmap: React.FC = () => {
       id: `h_${Date.now()}`,
       name: newHabitName.trim(),
       category: 'Focus',
-      streak: 1,
+      streak: 0,
       daysCompleted: [false, false, false, false, false, false, false],
     };
-    setHabits(prev => [newHabit, ...prev]);
+    setHabits(prev => {
+      const updated = [newHabit, ...prev];
+      try {
+        localStorage.setItem('procastinot_habits', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
     setNewHabitName('');
     setShowAddHabit(false);
   };
 
   const toggleHabitDay = (habitId: string, dayIndex: number) => {
-    setHabits(prev =>
-      prev.map(h => {
+    setHabits(prev => {
+      const updated = prev.map(h => {
         if (h.id === habitId) {
           const updatedDays = [...h.daysCompleted];
           updatedDays[dayIndex] = !updatedDays[dayIndex];
-          const newStreak = updatedDays[dayIndex] ? h.streak + 1 : Math.max(0, h.streak - 1);
-          return { ...h, daysCompleted: updatedDays, streak: newStreak };
+          const completedCount = updatedDays.filter(Boolean).length;
+          return { ...h, daysCompleted: updatedDays, streak: completedCount };
         }
         return h;
-      })
-    );
+      });
+      try {
+        localStorage.setItem('procastinot_habits', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
   };
 
   // Organize heatmapDays into real GitHub-style columns (weeks of 7 days)
@@ -278,9 +306,29 @@ export const StreakHeatmap: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-auto font-telemetry-sm text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Verified Proof-of-Work</span>
+            <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+              {selectedDay.count > 0 ? (
+                <div className="flex items-center gap-1.5 font-telemetry-sm text-xs font-bold text-emerald-600 dark:text-emerald-400 mr-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Verified Proof</span>
+                </div>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => recordFocusSession(25, selectedDay.date)}
+                className="px-3 py-1.5 rounded-xl clay-btn-primary text-white text-xs font-telemetry-sm font-bold cursor-pointer hover:opacity-90"
+                title={`Log 25m focus sprint for ${selectedDay.date}`}
+              >
+                +25m Focus
+              </button>
+              <button
+                type="button"
+                onClick={() => recordFocusSession(50, selectedDay.date)}
+                className="px-3 py-1.5 rounded-xl clay-btn-light text-slate-700 dark:text-slate-300 text-xs font-telemetry-sm font-bold cursor-pointer"
+                title={`Log 50m deep work block for ${selectedDay.date}`}
+              >
+                +50m Deep
+              </button>
             </div>
           </div>
         </div>

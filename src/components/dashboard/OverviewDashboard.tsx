@@ -23,7 +23,7 @@ interface OverviewDashboardProps {
 
 export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const { isRunning, startTimer } = useTimer();
+  const { isRunning, startTimer, sessionLogs } = useTimer();
   const { tasks, toggleTaskComplete, circadianStatus } = useTask();
   const { streak, focusPoints, rooms } = useGamification();
 
@@ -43,6 +43,22 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
 
   // Split streak digits for rotary tumbler display
   const streakDigits = streak.toString().padStart(3, '0').split('');
+
+  // Calculate real today telemetry
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todaySessions = sessionLogs.filter(
+    s => s.completed && s.mode === 'focus' && s.timestamp.startsWith(todayStr)
+  );
+  const todayFocusMinutes = todaySessions.reduce((acc, s) => acc + s.durationMinutes, 0);
+  const todayHours = Math.floor(todayFocusMinutes / 60);
+  const todayMins = todayFocusMinutes % 60;
+  const focusTodayStr = `${todayHours}h ${todayMins.toString().padStart(2, '0')}m`;
+  const focusTargetRatio = Math.min(1, todayFocusMinutes / 300); // 5h target = 300m
+  const focusTargetPercent = Math.round(focusTargetRatio * 100);
+
+  const completedTasksCount = tasks.filter(t => t.completed).length;
+  const totalTasksCount = tasks.length;
+  const taskEfficiencyPercent = totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0;
 
   return (
     <div className="flex flex-col w-full gap-6 select-none">
@@ -156,26 +172,28 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
                   stroke="currentColor"
                   strokeWidth="10"
                   strokeDasharray={238.76}
-                  strokeDashoffset={238.76 * (1 - 0.75)}
+                  strokeDashoffset={238.76 * (1 - focusTargetRatio)}
                   strokeLinecap="round"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-telemetry-sm text-sm text-emerald-700 dark:text-emerald-400 font-extrabold">
-                  75%
+                  {focusTargetPercent}%
                 </span>
               </div>
             </div>
             <div className="flex flex-col items-end">
               <span className="font-telemetry-lg text-2xl text-slate-900 dark:text-slate-100 font-black tracking-tight">
-                3h 45m
+                {focusTodayStr}
               </span>
               <span className="font-telemetry-sm text-xs text-slate-600 dark:text-slate-400 font-bold">Target: 5h 00m</span>
             </div>
           </div>
           <div className="flex items-center justify-between pt-1 font-telemetry-sm text-[11px] clay-inset px-3 py-2 rounded-xl">
             <span className="text-slate-700 dark:text-slate-300 font-bold">RUNNING ACCEL</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-black">+22m vs Ystd</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-black">
+              {todayFocusMinutes > 0 ? `+${todayFocusMinutes}m Today` : 'Awaiting Sprint'}
+            </span>
           </div>
         </div>
 
@@ -188,22 +206,27 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
             <Zap className="w-5 h-5 text-orange-500" />
           </div>
           <div className="my-2">
-            <div className="flex items-center gap-1.5 justify-between py-2 px-2.5 clay-inset rounded-2xl">
-              {[50, 50, 50, 45].map((mins, idx) => (
-                <div key={idx} className="h-9 flex-1 rounded-xl clay-btn-primary flex items-center justify-center">
-                  <span className="font-telemetry-sm text-[10px] text-white font-extrabold">{mins}m</span>
-                </div>
-              ))}
-              {[50, 50].map((mins, idx) => (
-                <div key={idx} className="h-9 flex-1 rounded-xl bg-white/80 dark:bg-slate-800/60 clay-pill flex items-center justify-center border border-slate-200 dark:border-white/5">
-                  <span className="font-telemetry-sm text-[10px] text-slate-600 dark:text-slate-400 font-extrabold">{mins}m</span>
-                </div>
-              ))}
-            </div>
+            {todaySessions.length > 0 ? (
+              <div className="flex items-center gap-1.5 justify-start flex-wrap py-2 px-2.5 clay-inset rounded-2xl">
+                {todaySessions.map((sess, idx) => (
+                  <div key={idx} className="h-9 px-3 rounded-xl clay-btn-primary flex items-center justify-center">
+                    <span className="font-telemetry-sm text-[10px] text-white font-extrabold">{sess.durationMinutes}m</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-2.5 px-3 clay-inset rounded-2xl text-center">
+                <span className="font-telemetry-sm text-[11px] text-slate-500 dark:text-slate-400 font-bold">
+                  0 blocks completed today
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between font-telemetry-sm text-xs">
             <span className="text-slate-600 dark:text-slate-400 font-extrabold">COMPLETED RATIO</span>
-            <span className="text-orange-600 dark:text-orange-400 font-black">4 OF 6 CYCLES</span>
+            <span className="text-orange-600 dark:text-orange-400 font-black">
+              {todaySessions.length} OF 6 CYCLES
+            </span>
           </div>
         </div>
 
@@ -214,7 +237,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
               Points Bank
             </span>
             <span className="px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 clay-pill font-telemetry-sm text-[10px] font-extrabold">
-              TIER III DECK
+              TIER {focusPoints >= 2000 ? 'III' : focusPoints >= 1000 ? 'II' : 'I'} DECK
             </span>
           </div>
           <div className="flex items-center gap-3.5 my-2">
@@ -226,7 +249,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
                 {focusPoints.toLocaleString()}
               </span>
               <span className="font-telemetry-sm text-xs text-orange-600 dark:text-orange-400 font-bold">
-                +350 FP Earned Today
+                +{todaySessions.reduce((acc, s) => acc + (s.pointsEarned || 0), 0)} FP Earned Today
               </span>
             </div>
           </div>
@@ -250,15 +273,22 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ onNavigate
           </div>
           <div className="flex items-baseline justify-between my-2">
             <div className="flex items-baseline gap-1">
-              <span className="font-telemetry-lg text-3xl font-black text-slate-900 dark:text-slate-100">8</span>
-              <span className="font-telemetry-sm text-xs text-slate-500 font-bold">/ 10 Done</span>
+              <span className="font-telemetry-lg text-3xl font-black text-slate-900 dark:text-slate-100">
+                {completedTasksCount}
+              </span>
+              <span className="font-telemetry-sm text-xs text-slate-500 font-bold">
+                / {totalTasksCount} Done
+              </span>
             </div>
             <span className="font-telemetry-sm text-xs px-2.5 py-1 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-extrabold">
-              92% Efficiency
+              {taskEfficiencyPercent}% Efficiency
             </span>
           </div>
           <div className="w-full clay-inset h-3 rounded-full overflow-hidden p-0.5">
-            <div className="bg-indigo-600 h-full rounded-full w-[80%]" />
+            <div
+              className="bg-indigo-600 h-full rounded-full transition-all duration-500"
+              style={{ width: `${taskEfficiencyPercent}%` }}
+            />
           </div>
         </div>
       </div>

@@ -11,6 +11,7 @@ import {
   ShopTheme,
   RoutineNotification,
 } from '../types';
+import { getRealHeatmapGrid, loadUserDailyRecords } from '../utils/streakTelemetry';
 
 export const initialUser: UserProfile = {
   id: 'usr_pro_01',
@@ -20,14 +21,14 @@ export const initialUser: UserProfile = {
   role: 'student',
   institution: 'Stanford University',
   chronotype: 'night_owl',
-  streak: 18,
+  streak: 0,
   streakFreezes: 2,
-  focusPoints: 1420,
-  level: 7,
+  focusPoints: 0,
+  level: 1,
   activeTheme: 'google-stitch',
   unlockedThemes: ['google-stitch'],
-  unlockedBadges: ['badge_first_streak', 'badge_deep_diver', 'badge_gamma_master'],
-  joinedDate: '2026-01-15',
+  unlockedBadges: [],
+  joinedDate: new Date().toISOString().split('T')[0],
 };
 
 export const defaultPresets: TimerPreset[] = [
@@ -149,17 +150,17 @@ export const initialExams: ExamDeadline[] = [
 ];
 
 export const initialBlockedDomains: BlockedDomain[] = [
-  { id: 'b_1', domain: 'instagram.com', name: 'Instagram', icon: 'camera', attemptsToday: 7, minutesSaved: 42, category: 'social', isDefault: true },
-  { id: 'b_2', domain: 'tiktok.com', name: 'TikTok', icon: 'film', attemptsToday: 12, minutesSaved: 68, category: 'social', isDefault: true },
-  { id: 'b_3', domain: 'youtube.com', name: 'YouTube Shorts & Feed', icon: 'play-circle', attemptsToday: 9, minutesSaved: 54, category: 'video', isDefault: true },
-  { id: 'b_4', domain: 'reddit.com', name: 'Reddit', icon: 'message-square', attemptsToday: 4, minutesSaved: 25, category: 'social', isDefault: true },
-  { id: 'b_5', domain: 'x.com', name: 'X / Twitter', icon: 'twitter', attemptsToday: 6, minutesSaved: 31, category: 'news', isDefault: true },
-  { id: 'b_6', domain: 'facebook.com', name: 'Facebook', icon: 'share-2', attemptsToday: 5, minutesSaved: 35, category: 'social', isDefault: true },
-  { id: 'b_7', domain: 'netflix.com', name: 'Netflix', icon: 'tv', attemptsToday: 1, minutesSaved: 30, category: 'video', isDefault: true },
-  { id: 'b_8', domain: 'twitch.tv', name: 'Twitch', icon: 'radio', attemptsToday: 3, minutesSaved: 20, category: 'gaming', isDefault: true },
-  { id: 'b_9', domain: 'threads.net', name: 'Threads', icon: 'message-circle', attemptsToday: 2, minutesSaved: 15, category: 'social', isDefault: true },
-  { id: 'b_10', domain: 'discord.com', name: 'Discord', icon: 'message-square', attemptsToday: 8, minutesSaved: 40, category: 'social', isDefault: true },
-  { id: 'b_11', domain: 'pinterest.com', name: 'Pinterest', icon: 'image', attemptsToday: 2, minutesSaved: 15, category: 'social', isDefault: true },
+  { id: 'b_1', domain: 'instagram.com', name: 'Instagram', icon: 'camera', attemptsToday: 0, minutesSaved: 0, category: 'social', isDefault: true },
+  { id: 'b_2', domain: 'tiktok.com', name: 'TikTok', icon: 'film', attemptsToday: 0, minutesSaved: 0, category: 'social', isDefault: true },
+  { id: 'b_3', domain: 'youtube.com', name: 'YouTube Shorts & Feed', icon: 'play-circle', attemptsToday: 0, minutesSaved: 0, category: 'video', isDefault: true },
+  { id: 'b_4', domain: 'reddit.com', name: 'Reddit', icon: 'message-square', attemptsToday: 0, minutesSaved: 0, category: 'social', isDefault: true },
+  { id: 'b_5', domain: 'x.com', name: 'X / Twitter', icon: 'twitter', attemptsToday: 0, minutesSaved: 0, category: 'news', isDefault: true },
+  { id: 'b_6', domain: 'facebook.com', name: 'Facebook', icon: 'share-2', attemptsToday: 0, minutesSaved: 0, category: 'social', isDefault: true },
+  { id: 'b_7', domain: 'netflix.com', name: 'Netflix', icon: 'tv', attemptsToday: 0, minutesSaved: 0, category: 'video', isDefault: true },
+  { id: 'b_8', domain: 'twitch.tv', name: 'Twitch', icon: 'radio', attemptsToday: 0, minutesSaved: 0, category: 'gaming', isDefault: true },
+  { id: 'b_9', domain: 'threads.net', name: 'Threads', icon: 'message-circle', attemptsToday: 0, minutesSaved: 0, category: 'social', isDefault: true },
+  { id: 'b_10', domain: 'discord.com', name: 'Discord', icon: 'message-square', attemptsToday: 0, minutesSaved: 0, category: 'social', isDefault: true },
+  { id: 'b_11', domain: 'pinterest.com', name: 'Pinterest', icon: 'image', attemptsToday: 0, minutesSaved: 0, category: 'social', isDefault: true },
 ];
 
 export const initialRooms: VirtualRoom[] = [
@@ -210,38 +211,14 @@ export const initialRooms: VirtualRoom[] = [
 export const initialLeaderboard: PeerLeaderboardEntry[] = [
   { rank: 1, id: 'u_lead_1', name: 'Elena Rostova', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80', institution: 'MIT', weeklyHours: 38.5, dailyHours: 6.2, streak: 31, points: 3420 },
   { rank: 2, id: 'u_lead_2', name: 'Sarah Lin', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80', institution: 'Stanford', weeklyHours: 35.2, dailyHours: 5.8, streak: 24, points: 3180 },
-  { rank: 3, id: 'usr_pro_01', name: 'Alex Chen (You)', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', institution: 'Stanford', weeklyHours: 31.0, dailyHours: 5.1, streak: 18, points: 2890, isCurrentUser: true },
+  { rank: 3, id: 'usr_pro_01', name: 'Alex Chen (You)', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80', institution: 'Stanford', weeklyHours: 0, dailyHours: 0, streak: 0, points: 0, isCurrentUser: true },
   { rank: 4, id: 'u_lead_3', name: 'Zoe Thorne', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80', institution: 'UC Berkeley', weeklyHours: 29.4, dailyHours: 4.6, streak: 42, points: 2750 },
   { rank: 5, id: 'u_lead_4', name: 'Marcus Brody', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80', institution: 'Carnegie Mellon', weeklyHours: 26.8, dailyHours: 4.2, streak: 12, points: 2410 },
   { rank: 6, id: 'u_lead_5', name: 'Kenji Takahashi', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&auto=format&fit=crop&q=80', institution: 'Tokyo Univ', weeklyHours: 24.1, dailyHours: 3.9, streak: 15, points: 2200 },
 ];
 
 export const generateHeatmapData = (): HeatmapDay[] => {
-  const days: HeatmapDay[] = [];
-  const today = new Date();
-  for (let i = 180; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split('T')[0];
-    
-    // Simulate realistic study consistency with higher activity in recent weeks
-    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-    const baseProb = isWeekend ? 0.75 : 0.92;
-    const active = Math.random() < baseProb;
-    let minutes = 0;
-    let level: 0 | 1 | 2 | 3 | 4 = 0;
-
-    if (active) {
-      minutes = Math.floor(Math.random() * 240) + 45;
-      if (minutes < 60) level = 1;
-      else if (minutes < 120) level = 2;
-      else if (minutes < 200) level = 3;
-      else level = 4;
-    }
-
-    days.push({ date: dateStr, count: minutes, level });
-  }
-  return days;
+  return getRealHeatmapGrid(loadUserDailyRecords());
 };
 
 export const performanceDeltaHistory: DailyPerformanceDelta[] = [
@@ -313,11 +290,11 @@ export const initialNotifications: RoutineNotification[] = [
   },
   {
     id: 'notif_3',
-    title: 'Streak Record Maintained! 🔥',
-    message: 'Day 18 consistency locked in. You earned 50 bonus Focus Points and 1 Streak Freeze shield.',
+    title: 'Welcome to ProcastiNot! 🚀',
+    message: 'Start your first focus sprint to ignite your study streak and build your heatmap.',
     type: 'streak',
-    timestamp: '4h ago',
-    read: true,
+    timestamp: 'Just now',
+    read: false,
   },
   {
     id: 'notif_4',
