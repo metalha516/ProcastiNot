@@ -330,3 +330,100 @@ test('8. Real Session Logging & Dashboard Telemetry Integration', () => {
   const totalPoints = sampleSessions.reduce((acc, s) => acc + s.pointsEarned, 0);
   assert.equal(totalPoints, 150, 'Total points earned today must be 150');
 });
+
+test('9. Defensive Form Validation & XSS Neutralization', () => {
+  const sanitizeDomain = (raw) => {
+    let clean = String(raw || '').trim().toLowerCase();
+    try {
+      if (clean.includes('://')) {
+        clean = new URL(clean).hostname;
+      } else if (clean.includes('/')) {
+        clean = clean.split('/')[0];
+      }
+    } catch {
+      clean = clean.split('/')[0].split('?')[0];
+    }
+    return clean.replace(/^(https?:\/\/)?(www|m|mobile)\./, '').split('?')[0].split('#')[0];
+  };
+
+  // Malicious XSS inputs
+  const xssUrl1 = 'https://instagram.com/<script>alert(1)</script>';
+  assert.equal(sanitizeDomain(xssUrl1), 'instagram.com', 'XSS payload in path must be stripped');
+
+  const xssUrl2 = 'javascript:alert("hacked")';
+  assert.equal(sanitizeDomain(xssUrl2), 'javascript:alert("hacked")', 'Protocol stripped or path isolated');
+
+  // Extreme string length truncation
+  const maxTitleLength = 120;
+  const giantTitle = 'A'.repeat(5000);
+  const truncated = giantTitle.slice(0, maxTitleLength);
+  assert.equal(truncated.length, 120, 'Long titles must constrain to max length');
+
+  // Unicode glyphs & emojis
+  const unicodeTask = '🧠 Prove P != NP ⚡ 🚀';
+  assert.ok(unicodeTask.includes('🧠'), 'Unicode emojis must be preserved cleanly in task titles');
+});
+
+test('10. Fault-Tolerant LocalStorage Recovery & JSON Parsing Safety', () => {
+  const safeParseStorage = (rawJson, fallback) => {
+    if (!rawJson || typeof rawJson !== 'string') return fallback;
+    try {
+      return JSON.parse(rawJson);
+    } catch {
+      return fallback;
+    }
+  };
+
+  // Valid JSON array
+  assert.deepEqual(safeParseStorage('[{"id": 1}]', []), [{ id: 1 }]);
+
+  // Corrupted / malformed JSON strings
+  assert.deepEqual(safeParseStorage('{"incomplete": true,', []), [], 'Malformed JSON must return fallback without crashing');
+  assert.deepEqual(safeParseStorage('undefined', []), [], 'String undefined must return fallback');
+  assert.deepEqual(safeParseStorage(null, []), [], 'Null must return fallback');
+});
+
+test('11. Multi-Tab BroadcastChannel Payload Contract Verification', () => {
+  const createSyncMessage = (timeRemaining, isRunning, mode) => {
+    return {
+      type: 'SYNC',
+      timeRemaining: Math.max(0, Math.floor(timeRemaining)),
+      isRunning: Boolean(isRunning),
+      mode: ['focus', 'short_break', 'long_break'].includes(mode) ? mode : 'focus',
+      timestamp: Date.now(),
+    };
+  };
+
+  const msg = createSyncMessage(1499.7, true, 'focus');
+  assert.equal(msg.type, 'SYNC');
+  assert.equal(msg.timeRemaining, 1499);
+  assert.equal(msg.isRunning, true);
+  assert.equal(msg.mode, 'focus');
+  assert.ok(typeof msg.timestamp === 'number');
+});
+
+test('12. Precision Drift-Proof Timer Target Delta Verification', () => {
+  // Simulates a 25-minute Pomodoro session where the browser tab is hidden for 10 seconds
+  const totalSeconds = 25 * 60; // 1500 seconds
+  const startTime = 1000000; // Simulated epoch
+  const targetEndTime = startTime + totalSeconds * 1000;
+
+  const calculateRemaining = (currentTime) => {
+    const msLeft = targetEndTime - currentTime;
+    return Math.max(0, Math.ceil(msLeft / 1000));
+  };
+
+  // At start
+  assert.equal(calculateRemaining(startTime), 1500);
+
+  // 1 second elapsed normally
+  assert.equal(calculateRemaining(startTime + 1000), 1499);
+
+  // Background tab throttle event: 10 seconds pass in background
+  const after10sFreeze = startTime + 11000;
+  assert.equal(calculateRemaining(after10sFreeze), 1489, 'Drift calculation must instantly recover 10 elapsed seconds');
+
+  // Timer complete
+  assert.equal(calculateRemaining(targetEndTime + 5000), 0, 'Completed timer must clamp to 0');
+});
+

@@ -97,6 +97,7 @@ export const ExamCountdown: React.FC = () => {
                 onChange={e => setNewTitle(e.target.value)}
                 placeholder="e.g. CS 161 Algorithms Final"
                 className="w-full clay-inset rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                maxLength={100}
                 required
               />
             </div>
@@ -108,6 +109,7 @@ export const ExamCountdown: React.FC = () => {
                 onChange={e => setNewCourseCode(e.target.value)}
                 placeholder="e.g. CS 161"
                 className="w-full clay-inset rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                maxLength={20}
               />
             </div>
           </div>
@@ -144,6 +146,7 @@ export const ExamCountdown: React.FC = () => {
               onChange={e => setNewTopics(e.target.value)}
               placeholder="e.g. Dynamic Programming, Max Flow, Linear Programming"
               className="w-full clay-inset rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              maxLength={300}
             />
           </div>
 

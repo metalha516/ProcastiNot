@@ -150,11 +150,23 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const addBlockedDomain = (domain: string, name: string, category: 'social' | 'video' | 'gaming' | 'news') => {
-    const cleanDomain = domain.replace(/^(https?:\/\/)?(www\.)?/, '').toLowerCase();
+    let cleanDomain = domain.trim().toLowerCase();
+    try {
+      if (cleanDomain.includes('://')) {
+        cleanDomain = new URL(cleanDomain).hostname;
+      } else if (cleanDomain.includes('/')) {
+        cleanDomain = cleanDomain.split('/')[0];
+      }
+    } catch {
+      cleanDomain = cleanDomain.split('/')[0].split('?')[0];
+    }
+    cleanDomain = cleanDomain.replace(/^(https?:\/\/)?(www|m|mobile)\./, '').split('?')[0].split('#')[0];
+    if (!cleanDomain) return;
+
     const newBlocked: BlockedDomain = {
       id: `b_${Date.now()}`,
       domain: cleanDomain,
-      name: name || cleanDomain,
+      name: name.trim() || cleanDomain,
       icon: 'shield-alert',
       attemptsToday: 0,
       minutesSaved: 0,
@@ -162,6 +174,7 @@ export const GamificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       isDefault: false,
     };
     setBlockedDomains(prev => {
+      if (prev.some(b => b.domain === cleanDomain)) return prev;
       const updated = [newBlocked, ...prev];
       localStorage.setItem('procastinot_blocked_domains', JSON.stringify(updated));
       return updated;

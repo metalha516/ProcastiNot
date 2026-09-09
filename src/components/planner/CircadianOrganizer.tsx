@@ -238,6 +238,7 @@ export const CircadianOrganizer: React.FC = () => {
                 onChange={e => setNewTitle(e.target.value)}
                 placeholder="e.g. Implement Dijkstra's Algorithm"
                 className="w-full clay-inset rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 font-semibold focus:outline-none"
+                maxLength={120}
                 required
               />
             </div>
@@ -249,6 +250,7 @@ export const CircadianOrganizer: React.FC = () => {
                 onChange={e => setNewCourse(e.target.value)}
                 placeholder="e.g. CS 161"
                 className="w-full clay-inset rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 font-semibold focus:outline-none"
+                maxLength={30}
               />
             </div>
           </div>
