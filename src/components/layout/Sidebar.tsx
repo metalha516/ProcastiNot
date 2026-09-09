@@ -57,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const sidebarContent = (
-    <div className="h-full flex flex-col justify-between p-3 sm:p-4 clay-card rounded-3xl z-40 border border-white/60 dark:border-white/5 transition-all select-none">
+    <div className={`h-full flex flex-col justify-between ${isCollapsed ? 'p-2.5' : 'p-3 sm:p-4'} clay-card rounded-3xl z-40 border border-white/60 dark:border-white/5 transition-all select-none overflow-hidden`}>
       <div className="flex flex-col gap-3">
         {/* Brand Emblem Header */}
         <div className={`h-14 px-3 flex items-center gap-3 rounded-2xl bg-white/70 dark:bg-[#141926] clay-pill ${isCollapsed ? 'justify-center' : ''}`}>
@@ -156,24 +156,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
         )}
 
         {/* Theme Toggle & Collapse Buttons */}
-        <div className="flex items-center justify-between gap-2">
+        <div className={`flex gap-2 ${isCollapsed ? 'flex-col items-center w-full' : 'items-center justify-between'}`}>
           {onToggleTheme && (
             <button
               type="button"
               onClick={onToggleTheme}
-              className={`flex items-center justify-center gap-2 px-3 py-2 rounded-2xl clay-btn-light text-slate-700 dark:text-slate-300 font-semibold cursor-pointer text-xs flex-1 ${
-                isCollapsed ? 'px-2' : ''
+              className={`flex items-center justify-center gap-2 rounded-2xl clay-btn-light text-slate-700 dark:text-slate-300 font-semibold cursor-pointer text-xs transition-all ${
+                isCollapsed ? 'w-full h-10 p-0' : 'flex-1 px-3 py-2.5'
               }`}
               title={isDark ? 'Switch to Light Clay' : 'Switch to Dark Clay'}
             >
               {isDark ? (
                 <>
-                  <Sun className="w-4 h-4 text-amber-400" />
+                  <Sun className="w-4 h-4 text-amber-400 shrink-0" />
                   {!isCollapsed && <span className="font-telemetry-sm font-bold">Light Clay</span>}
                 </>
               ) : (
                 <>
-                  <Moon className="w-4 h-4 text-indigo-600" />
+                  <Moon className="w-4 h-4 text-indigo-600 shrink-0" />
                   {!isCollapsed && <span className="font-telemetry-sm font-bold">Dark Clay</span>}
                 </>
               )}
@@ -183,7 +183,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="hidden lg:flex items-center justify-center p-2 rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer"
+            className={`hidden lg:flex items-center justify-center rounded-2xl clay-btn-light text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer transition-all shrink-0 ${
+              isCollapsed ? 'w-full h-10 p-0' : 'p-2.5'
+            }`}
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
