@@ -22,6 +22,7 @@
 
 - [Executive Abstract & Engineering Philosophy](#-executive-abstract--engineering-philosophy)
 - [System Architecture & Visual UML Models](#-system-architecture--visual-uml-models)
+  - [🏛️ Official Enterprise System Structure Diagram](#️-official-enterprise-system-structure-diagram)
   - [1. Unified Component & Service Topology](#1-unified-component--service-topology)
   - [2. Use Case Diagram (System Boundaries, Actors & Feature Matrix)](#2-use-case-diagram-system-boundaries-actors--feature-matrix)
   - [3. Class Diagram (Domain Models, State Contexts & DSP Engine)](#3-class-diagram-domain-models-state-contexts--dsp-engine)
@@ -59,6 +60,17 @@ University students and engineers face an attentional crisis. Empirical human-co
 ---
 
 ## 📐 System Architecture & Visual UML Models
+
+### 🏛️ Official Enterprise System Structure Diagram
+
+<div align="center">
+  <img src="public/architecture-structure-diagram.svg" alt="ProcastiNot Official Enterprise System Structure Diagram" width="100%" />
+</div>
+
+> **Figure 1.0:** *Comprehensive 5-Layer C4 Enterprise Structure Topology of ProcastiNot, detailing Client Ingress, Presentation UI, Application State Orchestration, Algorithmic Domain Engines, and Low-Level Web Audio DSP & Hardware Subsystems.*
+
+---
+
 
 ### 1. Unified Component & Service Topology
 
@@ -746,7 +758,9 @@ graph LR
 ### 1. Circadian Alertness Function \(A(t)\)
 The platform evaluates circadian cognitive stamina \(A(t) \in [0, 100]\) for hour \(t \in [0, 24]\) parameterized by user chronotype \(C \in \{	ext{Night Owl}, 	ext{Early Bird}, 	ext{Bimodal Flow}\}\):
 
-$$	ext{Alertness}(t) = 	ext{clamp}\left(15, 100, 	ext{Base} + lpha \cdot \cos\left(rac{2\pi (t - t_{	ext{peak}})}{24}ight) - \delta_{	ext{trough}}(t)ight)$$
+$$	ext{Alertness}(t) = 	ext{clamp}\left(15, 100, 	ext{Base} + lpha \cdot \cos\left(rac{2\pi (t - t_{	ext{peak}})}{24}
+ight) - \delta_{	ext{trough}}(t)
+ight)$$
 
 | Chronotype | Biological Alertness Peak \(t_{	ext{peak}}\) | Afternoon Trough \(t_{	ext{trough}}\) | Recommended Cognitive Weight |
 | :--- | :--- | :--- | :--- |
@@ -757,7 +771,13 @@ $$	ext{Alertness}(t) = 	ext{clamp}\left(15, 100, 	ext{Base} + lpha \cdot \cos\l
 ### 2. Dynamic Runway Rebalancing Formula
 When a student masters a syllabus topic or approaches a deadline, the required daily focus runway recalculates automatically:
 
-$$	ext{Runway}_{	ext{daily}} = \max\left(30, \left\lceil rac{K \cdot \sum_{i \in 	ext{Remaining}} w_i}{\max\left(1, \left\lfloor rac{T_{	ext{exam}} - T_{	ext{current}}}{86400 	imes 1000} ightflooright)} ightceilight)$$
+$$	ext{Runway}_{	ext{daily}} = \max\left(30, \left\lceil rac{K \cdot \sum_{i \in 	ext{Remaining}} w_i}{\max\left(1, \left\lfloor rac{T_{	ext{exam}} - T_{	ext{current}}}{86400 	imes 1000} 
+ight
+floor
+ight)} 
+ight
+ceil
+ight)$$
 
 ### 3. Task Priority Sorting Vector
 Tasks are automatically sorted across four dimensions:
