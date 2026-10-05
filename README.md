@@ -12,7 +12,7 @@
 
 **An enterprise-grade, anti-distraction cognitive productivity suite engineered for university scholars, competitive programmers, and deep-work researchers.**
 
-[Explore Live Demo](https://procastinot-nine.vercel.app/) • [System Architecture](#-system-architecture--reactive-data-flows) • [Mathematical Formulations](#-mathematical-formulations--chronobiology) • [Authentic Telemetry](#-authentic-telemetry--gamification-engine) • [Automated Tests](#-comprehensive-automated-test-matrix) • [Local Setup](#-local-deployment--automated-testing)
+[Explore Live Demo](https://procastinot-nine.vercel.app/) • [System Architecture & UML](#-system-architecture--visual-uml-models) • [Mathematical Formulations](#-mathematical-formulations--chronobiology) • [Authentic Telemetry](#-authentic-telemetry--gamification-engine) • [Automated Tests](#-comprehensive-automated-test-matrix) • [Local Setup](#-local-deployment--automated-testing)
 
 </div>
 
@@ -21,11 +21,14 @@
 ## 📑 Table of Contents
 
 - [Executive Abstract & Engineering Philosophy](#-executive-abstract--engineering-philosophy)
-- [System Architecture & Reactive Data Flows](#-system-architecture--reactive-data-flows)
+- [System Architecture & Visual UML Models](#-system-architecture--visual-uml-models)
   - [1. Unified Component & Service Topology](#1-unified-component--service-topology)
-  - [2. Drift-Proof Timer Execution Lifecycle](#2-drift-proof-timer-execution-lifecycle)
-  - [3. Anti-Distraction Shield Interception Sequence](#3-anti-distraction-shield-interception-sequence)
-  - [4. 40 Hz Gamma Wave Neural Entrainment Pipeline](#4-40-hz-gamma-wave-neural-entrainment-pipeline)
+  - [2. Use Case Diagram (System Boundaries, Actors & Feature Matrix)](#2-use-case-diagram-system-boundaries-actors--feature-matrix)
+  - [3. Class Diagram (Domain Models, State Contexts & DSP Engine)](#3-class-diagram-domain-models-state-contexts--dsp-engine)
+  - [4. Activity Diagram (Deep Work Sprint, Distraction Shield & Telemetry Workflow)](#4-activity-diagram-deep-work-sprint-distraction-shield--telemetry-workflow)
+  - [5. Sequence Diagram (Drift-Proof Session Lifecycle & Multi-Tier Coordination)](#5-sequence-diagram-drift-proof-session-lifecycle--multi-tier-coordination)
+  - [6. Anti-Distraction Shield Interception Sequence](#6-anti-distraction-shield-interception-sequence)
+  - [7. 40 Hz Gamma Wave Neural Entrainment Pipeline](#7-40-hz-gamma-wave-neural-entrainment-pipeline)
 - [Mathematical Formulations & Chronobiology](#-mathematical-formulations--chronobiology)
 - [Authentic Telemetry & Gamification Engine](#-authentic-telemetry--gamification-engine)
 - [Directory & Project Structure](#-directory--project-structure)
@@ -55,7 +58,7 @@ University students and engineers face an attentional crisis. Empirical human-co
 
 ---
 
-## 📐 System Architecture & Reactive Data Flows
+## 📐 System Architecture & Visual UML Models
 
 ### 1. Unified Component & Service Topology
 
@@ -124,44 +127,528 @@ graph TD
 
 ---
 
-### 2. Drift-Proof Timer Execution Lifecycle
+### 2. Use Case Diagram (System Boundaries, Actors & Feature Matrix)
 
-Traditional `setInterval(tick, 1000)` countdowns drift significantly in background tabs because modern browser engines throttle background timers to conserve battery and CPU. ProcastiNot implements an absolute target timestamp model:
+The Use Case model maps system capabilities across user roles and internal platform engines, contrasting the publicly accessible Pomodoro Focus timer with the authenticated student workspace and background interception engines:
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor User as Student
-    participant UI as Pomodoro Timer UI
-    participant Ctx as TimerContext
-    participant Worker as Interval & Visibility Listener
-    participant Audio as Gamma Audio Synthesizer
-
-    User->>UI: Clicks "Start Focus" (25:00)
-    UI->>Ctx: startTimer()
-    Ctx->>Audio: playChime('start')
-    Ctx->>Ctx: targetEndTimeRef = Date.now() + timeRemaining * 1000
-    Ctx->>Worker: Spin 1000ms tick & register 'visibilitychange'
-    Ctx->>Ctx: BroadcastChannel.postMessage('SYNC')
-    
-    par Background Tab Throttling Scenario
-        Note over Worker: User switches to another window / PDF reader
-        Note over Worker: Browser throttles setInterval from 1s to 10s
-        User->>Worker: User returns to ProcastiNot tab ('visibilitychange')
-        Worker->>Ctx: On visible: remaining = (targetEndTimeRef - Date.now()) / 1000
-        Ctx->>UI: Instant re-sync to exact elapsed second (0 drift)
+flowchart TB
+    %% Actors
+    subgraph Actors ["👤 Actors"]
+        Guest["fa:fa-user-clock Guest / Unauthenticated Visitor"]
+        Student["fa:fa-user-graduate Authenticated Student / Scholar"]
+        Extension["fa:fa-puzzle-piece Companion Extension & Userscript"]
+        BrowserHardware["fa:fa-microchip Browser Worker & Audio DAC"]
     end
 
-    Worker->>Ctx: remaining <= 0 (Session Complete)
-    Ctx->>Audio: playChime('complete')
-    Ctx->>Audio: stop() & AudioContext.suspend()
-    Ctx->>Ctx: Log session to localStorage ('procastinot_sessions')
-    Ctx->>UI: Trigger canvas-confetti & switch to Short Break (05:00)
+    %% System Boundary
+    subgraph ProcastiNot_System ["🖥️ ProcastiNot Application Boundary"]
+        
+        %% Free Public Tier
+        subgraph Public_Scope ["Free & Public Focus Tier"]
+            UC_RunTimer(["UC-01: Run Pomodoro Focus Sprint"]):::publicUC
+            UC_SelectPreset(["UC-02: Select Chronometer Preset"]):::publicUC
+            UC_SynthAudio(["UC-03: Synthesize 40Hz Gamma & Rain DSP"]):::publicUC
+            UC_AuthModal(["UC-04: Sign In / Campus SSO / Google OAuth"]):::publicUC
+            UC_Register(["UC-05: Register Account (+500 FP Bonus)"]):::publicUC
+        end
+
+        %% Authenticated Core Modules
+        subgraph Authenticated_Scope ["Authenticated Student Command & Flow OS"]
+            UC_Dashboard(["UC-06: View Real-Time Cognitive Load & Velocity"]):::authUC
+            UC_Circadian(["UC-07: Schedule Circadian Energy-Ranked Tasks"]):::authUC
+            UC_Eisenhower(["UC-08: Triage in Eisenhower 2x2 Matrix"]):::authUC
+            UC_ExamRunway(["UC-09: Track Exam Runway & Rebalance Syllabi"]):::authUC
+            UC_StudyRooms(["UC-10: Co-work in Virtual Peer Focus Rooms"]):::authUC
+            UC_Heatmap(["UC-11: Inspect 26-Week Heatmap & Streaks"]):::authUC
+            UC_Shop(["UC-12: Unlock Themes in Focus Point Shop"]):::authUC
+            UC_Leaderboard(["UC-13: Compete on Collegiate Leaderboard"]):::authUC
+        end
+
+        %% Anti-Distraction & Intervention
+        subgraph Shield_Scope ["Anti-Distraction Shield & Mindfulness Gate"]
+            UC_ManageBlacklist(["UC-14: Manage Blocked Domain Blacklist"]):::shieldUC
+            UC_InterceptLink(["UC-15: Intercept Social Media Navigation"]):::shieldUC
+            UC_BoxBreathing(["UC-16: 10s Box-Breathing Autonomic Reset"]):::shieldUC
+            UC_ResilienceBonus(["UC-17: Claim +35 FP Focus Resilience Bonus"]):::shieldUC
+            UC_EmergencyOverride(["UC-18: Confirm Intentional Visit Override"]):::shieldUC
+        end
+
+        %% Background & Hardware Subsystem
+        subgraph System_Scope ["Internal Hardware & Telemetry Engine"]
+            UC_TargetDelta(["UC-19: Synchronize Drift-Proof Target Delta"]):::engineUC
+            UC_MultiTab(["UC-20: Broadcast Multi-Tab State Synchronization"]):::engineUC
+            UC_StreakEngine(["UC-21: Compute Zero-Mock Streak & Heatmap Levels"]):::engineUC
+            UC_SuspendDAC(["UC-22: Suspend Web Audio DAC on Inactivity"]):::engineUC
+        end
+    end
+
+    %% Actor to Use Case Connections
+    Guest --> UC_RunTimer
+    Guest --> UC_SelectPreset
+    Guest --> UC_SynthAudio
+    Guest --> UC_AuthModal
+    Guest --> UC_Register
+
+    Student --> UC_RunTimer
+    Student --> UC_Dashboard
+    Student --> UC_Circadian
+    Student --> UC_Eisenhower
+    Student --> UC_ExamRunway
+    Student --> UC_StudyRooms
+    Student --> UC_Heatmap
+    Student --> UC_Shop
+    Student --> UC_Leaderboard
+    Student --> UC_ManageBlacklist
+
+    Extension --> UC_InterceptLink
+    BrowserHardware --> UC_TargetDelta
+    BrowserHardware --> UC_MultiTab
+    BrowserHardware --> UC_StreakEngine
+    BrowserHardware --> UC_SuspendDAC
+
+    %% Include & Extend Relationships
+    UC_RunTimer -.->|<<include>>| UC_SynthAudio
+    UC_RunTimer -.->|<<include>>| UC_TargetDelta
+    UC_RunTimer -.->|<<include>>| UC_MultiTab
+    UC_RunTimer -.->|<<include>>| UC_StreakEngine
+    
+    UC_InterceptLink -.->|<<include>>| UC_BoxBreathing
+    UC_BoxBreathing -.->|<<extend>>| UC_ResilienceBonus
+    UC_BoxBreathing -.->|<<extend>>| UC_EmergencyOverride
+
+    UC_Circadian -.->|<<include>>| UC_Eisenhower
+    UC_ExamRunway -.->|<<extend>>| UC_Circadian
+
+    classDef publicUC fill:#38bdf815,stroke:#0284c7,stroke-width:1.5px
+    classDef authUC fill:#818cf815,stroke:#6366f1,stroke-width:1.5px
+    classDef shieldUC fill:#f43f5e15,stroke:#e11d48,stroke-width:1.5px
+    classDef engineUC fill:#10b98115,stroke:#059669,stroke-width:1.5px
 ```
 
 ---
 
-### 3. Anti-Distraction Shield Interception Sequence
+### 3. Class Diagram (Domain Models, State Contexts & DSP Engine)
+
+The object-oriented structure models entities, React Context providers, pure mathematical utility algorithms, and low-level Web Audio digital signal processors:
+
+```mermaid
+classDiagram
+    direction TB
+
+    class UserProfile {
+        +string id
+        +string name
+        +string email
+        +string avatar
+        +UserRole role
+        +string institution
+        +string chronotype
+        +number streak
+        +number streakFreezes
+        +number focusPoints
+        +number level
+        +string activeTheme
+        +string[] unlockedThemes
+        +string[] unlockedBadges
+        +string joinedDate
+    }
+
+    class Task {
+        +string id
+        +string title
+        +string description
+        +string course
+        +TaskEnergyLevel energy
+        +TaskDifficulty difficulty
+        +number estimatedMinutes
+        +number completedMinutes
+        +boolean completed
+        +string dueDate
+        +string preferredWindow
+        +string[] tags
+        +boolean examRelated
+    }
+
+    class ExamDeadline {
+        +string id
+        +string title
+        +string courseCode
+        +string examDate
+        +string priority
+        +number syllabusCoverage
+        +string[] topicsRemaining
+        +string[] topicsCompleted
+        +number dailyQuotaMinutes
+    }
+
+    class FocusSessionLog {
+        +string id
+        +string timestamp
+        +number durationMinutes
+        +TimerMode mode
+        +string taskTitle
+        +number interceptionsEncountered
+        +number pointsEarned
+        +boolean completed
+    }
+
+    class BlockedDomain {
+        +string id
+        +string domain
+        +string name
+        +string icon
+        +number attemptsToday
+        +number minutesSaved
+        +string category
+        +boolean isDefault
+    }
+
+    class SecondThoughtInterception {
+        +string id
+        +string domain
+        +string timestamp
+        +string reason
+        +boolean returnedToFocus
+        +number breathingSecondsCompleted
+        +number pointsAwarded
+    }
+
+    class VirtualRoom {
+        +string id
+        +string name
+        +string description
+        +string category
+        +number activeParticipants
+        +number maxParticipants
+        +TimerMode timerMode
+        +string soundscape
+        +boolean isJoined
+        +FocusRoomPeer[] peers
+    }
+
+    class FocusRoomPeer {
+        +string id
+        +string name
+        +string avatar
+        +string status
+        +string currentTask
+        +number timeRemainingSeconds
+        +boolean isMuted
+        +number activeStreak
+        +number pointsToday
+    }
+
+    class HeatmapDay {
+        +string date
+        +number count
+        +number level
+    }
+
+    class DailyPerformanceDelta {
+        +string date
+        +number focusHours
+        +number tasksCompleted
+        +number distractionsAvoided
+        +number performanceScore
+        +number deltaPercentage
+    }
+
+    class TimerPreset {
+        +string id
+        +string name
+        +number focusMinutes
+        +number breakMinutes
+        +string icon
+        +string tag
+    }
+
+    class GammaAudioState {
+        +boolean enabled
+        +number frequency
+        +number carrierFrequency
+        +string mode
+        +number gammaVolume
+        +string ambientType
+        +number ambientVolume
+    }
+
+    class GammaAudioEngine {
+        -AudioContext ctx
+        -GainNode masterGain
+        -GainNode gammaGain
+        -GainNode ambientGain
+        -OscillatorNode oscLeft
+        -OscillatorNode oscRight
+        -ChannelMergerNode merger
+        -OscillatorNode isochronicCarrier
+        -OscillatorNode isochronicLFO
+        -AudioBufferSourceNode ambientSource
+        +initContext() Promise~AudioContext~
+        +startGamma(carrier, beat, vol) void
+        +startIsochronic(carrier, beat, vol) void
+        +startAmbient(type, vol) void
+        +stop() void
+        +playChime(type) void
+        +suspend() void
+        +resume() void
+    }
+
+    class StreakTelemetryEngine {
+        +formatLocalDate(d) string
+        +getIntensityLevel(minutes) number
+        +getRealHeatmapGrid(dailyStudy) HeatmapDay[]
+        +calculateRealStreak(dailyStudy, freezes) object
+        +loadUserDailyRecords() Record~string, number~
+        +saveUserDailyRecords(records) void
+    }
+
+    class BrowserShield {
+        +isDomainBlocked(targetUrl) string
+        +triggerInterception(domain) void
+        +resolveInterception(returned, reason) void
+    }
+
+    class AuthContext {
+        +boolean isAuthenticated
+        +UserProfile user
+        +string token
+        +boolean isLoading
+        +login(email, pass) Promise~void~
+        +register(name, email, pass, institution, chronotype) Promise~void~
+        +loginWithGoogle(email, name, avatar) Promise~void~
+        +loginWithSSO(institution, email) Promise~void~
+        +loginDemoUser() Promise~void~
+        +logout() void
+        +updateUser(updates) void
+    }
+
+    class TimerContext {
+        +TimerMode mode
+        +number timeRemaining
+        +number totalDuration
+        +boolean isRunning
+        +TimerPreset activePreset
+        +TimerPreset[] presets
+        +GammaAudioState gammaAudio
+        +FocusSessionLog[] sessionLogs
+        +string selectedTaskTitle
+        +startTimer() void
+        +pauseTimer() void
+        +resetTimer() void
+        +skipSession() void
+        +switchMode(newMode) void
+        +selectPreset(preset) void
+        +setCustomDuration(focus, break) void
+        +updateGammaSettings(updates) void
+        +toggleGammaAudio() void
+    }
+
+    class TaskContext {
+        +Task[] tasks
+        +ExamDeadline[] exams
+        +CircadianStatus circadianStatus
+        +addTask(task) void
+        +toggleTaskComplete(taskId) void
+        +deleteTask(taskId) void
+        +addExam(exam) void
+        +updateExamCoverage(examId, topic) void
+        +rebalanceRunway(examId) void
+        +isTaskEnergyAligned(task) object
+        +generateAIPlan(course, examDate, notes) Promise~string~
+    }
+
+    class GamificationContext {
+        +number focusPoints
+        +number streak
+        +number streakFreezes
+        +BlockedDomain[] blockedDomains
+        +VirtualRoom[] rooms
+        +HeatmapDay[] heatmapDays
+        +DailyPerformanceDelta[] deltaHistory
+        +boolean interceptionActive
+        +string interceptedDomain
+        +recordFocusSession(minutes, date) void
+        +clearStudyTelemetry() void
+        +awardPoints(amount, reason) void
+        +spendPoints(amount) boolean
+        +buyTheme(theme) boolean
+        +equipTheme(themeId) void
+        +addBlockedDomain(domain, name, category) void
+        +removeBlockedDomain(id) void
+        +triggerInterception(domain) void
+        +resolveInterception(returned, reason) void
+        +joinRoom(roomId) void
+        +leaveRoom() void
+        +useStreakFreeze() boolean
+    }
+
+    %% Entity Structure & Composition
+    AuthContext "1" o-- "0..1" UserProfile : manages
+    TaskContext "1" o-- "*" Task : organizes
+    TaskContext "1" o-- "*" ExamDeadline : tracks
+    TimerContext "1" o-- "*" TimerPreset : offers
+    TimerContext "1" o-- "*" FocusSessionLog : records
+    TimerContext "1" *-- "1" GammaAudioState : manages state
+    GamificationContext "1" o-- "*" BlockedDomain : maintains blacklist
+    GamificationContext "1" o-- "*" VirtualRoom : hosts
+    GamificationContext "1" o-- "182" HeatmapDay : renders grid
+    GamificationContext "1" o-- "*" DailyPerformanceDelta : tracks curve
+    VirtualRoom "1" *-- "*" FocusRoomPeer : contains peers
+
+    %% Service & Engine Invocations
+    TimerContext ..> GammaAudioEngine : triggers 40Hz audio DSP
+    TimerContext ..> GamificationContext : dispatches session completion
+    TimerContext ..> TaskContext : updates task progress
+    GamificationContext ..> StreakTelemetryEngine : invokes streak calculation
+    BrowserShield ..> GamificationContext : dispatches interception events
+```
+
+---
+
+### 4. Activity Diagram (Deep Work Sprint, Distraction Shield & Telemetry Workflow)
+
+The Activity workflow models the complete lifecycle of a deep work sprint from task selection through concurrent hardware initialization, background tab drift recovery, distraction interception, and authentic telemetry persistence:
+
+```mermaid
+flowchart TD
+    StartNode((●)) --> SelectTask["1. Student Selects Task & Sets Duration (e.g. 25:00)"]
+    SelectTask --> AuthCheck{"Is Student Authenticated?"}
+
+    AuthCheck -- "No (Guest Tier)" --> PublicSprint["Launch Free Focus Sprint (No telemetry recorded)"]
+    AuthCheck -- "Yes (Authenticated Scholar)" --> AuthSprint["Bind Sprint to Profile & Active Syllabus Topic"]
+
+    PublicSprint --> ForkInit
+    AuthSprint --> ForkInit
+
+    %% Concurrent Initialization Fork
+    ForkInit["══════ Concurrent Sprint Initialization ══════"]
+    ForkInit --> SetTarget["Set Absolute Target: targetEndTime = Date.now() + Duration × 1000"]
+    ForkInit --> InitDSP["Initialize Web Audio API: 40 Hz Gamma Wave + Natural Rain"]
+    ForkInit --> BroadcastSync["Broadcast 'TIMER_START' on BroadcastChannel ('procastinot_timer_channel')"]
+
+    SetTarget --> JoinInit
+    InitDSP --> JoinInit
+    BroadcastSync --> JoinInit
+
+    JoinInit["══════ Enter Deep Work Focus Loop ══════"] --> Tick["Run 1000ms Countdown Tick"]
+
+    %% Decision branches during focus loop
+    Tick --> CheckEvent{"Evaluate Runtime Event"}
+
+    %% Branch A: Background tab throttling recovery
+    CheckEvent -- "User switches tab / minimizes window" --> TabThrottled["Browser throttles setInterval (up to 10s delay)"]
+    TabThrottled --> TabReturn["User returns: 'visibilitychange' event fires"]
+    TabReturn --> ResyncTarget["Calculate Target Delta: remaining = (targetEndTime - Date.now()) / 1000"]
+    ResyncTarget --> Tick
+
+    %% Branch B: Distraction link interception
+    CheckEvent -- "User clicks external blacklisted URL" --> InterceptLink["useBrowserShield intercepts: event.preventDefault()"]
+    InterceptLink --> ModalGate["Mount SecondThoughtModal: 10-Second Mindfulness Gate"]
+    ModalGate --> BoxBreathing["Guide Autonomic Box Breathing (4s Inhale, 3s Hold, 3s Exhale)"]
+    BoxBreathing --> InterceptChoice{"Student Reflection Decision"}
+    
+    InterceptChoice -- "Return to Deep Work" --> AwardBonus["Award +35 Focus Points Resilience Bonus & Resume DSP Audio"]
+    AwardBonus --> Tick
+    
+    InterceptChoice -- "Confirm Intentional Visit" --> LogDistract["Log Distraction Event (0 points) & Bypass Shield Anchor"]
+    LogDistract --> Tick
+
+    %% Branch C: Normal tick or timer expired
+    CheckEvent -- "Remaining > 0" --> Tick
+    CheckEvent -- "Remaining <= 0 (Sprint Complete)" --> CompleteSession["Play Completion Chime & Suspend Web Audio DAC"]
+
+    CompleteSession --> ConfettiFX["Trigger Hardware-Accelerated Canvas Confetti Celebration"]
+    ConfettiFX --> SaveLocal["Persist FocusSessionLog to localStorage ('procastinot_sessions')"]
+
+    SaveLocal --> AuthSaveCheck{"Is Student Authenticated?"}
+    AuthSaveCheck -- "No" --> CycleSwitch
+    AuthSaveCheck -- "Yes" --> UpdateTelemetry["Compute Authentic Telemetry: calculateRealStreak() & 26-Week Heatmap"]
+    
+    UpdateTelemetry --> AwardPoints["Credit Focus Points (+25 FP per 25 min) & Update Day-over-Day Velocity"]
+    AwardPoints --> CheckBadges{"Check Milestone / Streak Freezes"}
+    CheckBadges --> CycleSwitch["Switch Chronometer Matrix to Short Break (05:00) / Long Rest (15:00)"]
+
+    CycleSwitch --> EndNode((◎))
+
+    classDef startFinish fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#ffffff
+    classDef actionNode fill:#f8fafc,stroke:#64748b,stroke-width:1.5px,color:#0f172a
+    classDef decisionNode fill:#f1f5f9,stroke:#0284c7,stroke-width:1.5px,color:#0f172a
+    classDef forkBar fill:#0284c7,stroke:#0284c7,stroke-width:2px,color:#ffffff
+```
+
+---
+
+### 5. Sequence Diagram (Drift-Proof Session Lifecycle & Multi-Tier Coordination)
+
+The multi-tier sequence details inter-process messaging, DSP initialization, visibility delta correction, and transactional persistence across client boundaries:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Student as 👤 Student Scholar
+    participant UI as 🖥️ PomodoroTimer (UI)
+    participant Ctx as ⏱️ TimerContext
+    participant Audio as 🎧 gammaEngine (Web Audio DSP)
+    participant Channel as 📡 BroadcastChannel
+    participant Browser as 🌐 Browser (Visibility & Tabs)
+    participant Shield as 🛡️ useBrowserShield
+    participant Modal as 🧘 SecondThoughtModal
+    participant GameCtx as 🏆 GamificationContext
+    participant Storage as 💾 LocalStorage
+
+    %% 1. Session Launch
+    Student->>UI: Clicks "START FOCUS" (25:00 SPRINT)
+    UI->>Ctx: startTimer()
+    
+    par Dual Hardware & State Initialization
+        Ctx->>Audio: initContext() & startGamma(216Hz, 40Hz, 0.35)
+        Audio->>Audio: startAmbient('rain', 0.25) & playChime('start')
+        Ctx->>Ctx: targetEndTimeRef = Date.now() + 1500 * 1000
+        Ctx->>Channel: postMessage({ type: 'SYNC_START', remaining: 1500 })
+    end
+
+    %% 2. Background Tab Throttling & Visibility Recovery
+    Note over Student,Browser: Student switches to PDF Reader / terminal window
+    Browser->>Ctx: Throttles setInterval tick (1000ms -> 10000ms delay)
+    Student->>Browser: Switches back to ProcastiNot tab
+    Browser->>Ctx: Dispatches 'visibilitychange' (document.visibilityState === 'visible')
+    Ctx->>Ctx: remaining = Math.round((targetEndTimeRef - Date.now()) / 1000)
+    Ctx->>UI: Instantaneous re-sync to exact elapsed second (0.00s drift)
+
+    %% 3. In-App Distraction Shield Interception
+    Note over Student,Shield: Student clicks external link (e.g. reddit.com / twitter.com)
+    Browser->>Shield: Global capture-phase 'click' event captured
+    Shield->>Shield: isDomainBlocked('reddit.com') -> Match found
+    Shield->>Browser: event.preventDefault() & event.stopPropagation()
+    Shield->>GameCtx: triggerInterception('reddit.com')
+    GameCtx->>Modal: Mount full-screen 10s Box-Breathing reset
+    
+    Note over Modal,Student: 4s Inhale → 3s Hold → 3s Exhale (Autonomic Vagal Reset)
+    Student->>Modal: Clicks "Return to Deep Work"
+    Modal->>GameCtx: resolveInterception(true, 'boredom')
+    GameCtx->>GameCtx: awardPoints(35, 'Focus Resilience Bonus')
+    GameCtx->>Modal: Dismiss modal & resume 40Hz Audio Entrainment
+
+    %% 4. Session Completion & Telemetry Persistence
+    Note over Ctx: targetEndTimeRef reached (timeRemaining <= 0)
+    Ctx->>Audio: playChime('complete')
+    Ctx->>Audio: stop() & AudioContext.suspend()
+    Ctx->>UI: Trigger canvas-confetti celebration
+    Ctx->>Storage: Append FocusSessionLog to 'procastinot_sessions'
+    
+    Ctx->>GameCtx: recordFocusSession(25, today)
+    GameCtx->>Storage: Update 'procastinot_daily_records' [date] += 25
+    GameCtx->>GameCtx: calculateRealStreak() & getRealHeatmapGrid()
+    GameCtx->>GameCtx: awardPoints(25, 'Pomodoro Sprint Complete')
+    GameCtx->>Storage: Persist updated user points, streak, and level
+    
+    Ctx->>UI: switchMode('short_break') -> Reset countdown to 05:00
+```
+
+---
+
+### 6. Anti-Distraction Shield Interception Sequence
 
 The platform provides a dual-layer distraction shield: an in-app capture-phase link interception for single-page links and an external userscript/extension interceptor for third-party browser tabs:
 
@@ -204,7 +691,7 @@ sequenceDiagram
 
 ---
 
-### 4. 40 Hz Gamma Wave Neural Entrainment Pipeline
+### 7. 40 Hz Gamma Wave Neural Entrainment Pipeline
 
 ProcastiNot generates pure acoustic neuro-stimulants entirely on client hardware without requesting pre-recorded MP3 streams:
 
